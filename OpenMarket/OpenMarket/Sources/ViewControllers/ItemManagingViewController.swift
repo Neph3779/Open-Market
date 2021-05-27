@@ -8,14 +8,14 @@
 import UIKit
 
 class ItemManagingViewController: UIViewController {
-    let outerScrollView: UIScrollView = {
+    private let outerScrollView: UIScrollView = {
         let scrollView = UIScrollView()
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         scrollView.backgroundColor = .systemBackground
         return scrollView
     }()
 
-    let outerStackView: UIStackView = {
+    private let outerStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.axis = .vertical
@@ -25,11 +25,16 @@ class ItemManagingViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .systemBackground
+        setItemManagingView()
         setOuterScrollView()
     }
 
-    func setOuterScrollView() {
+    private func setItemManagingView() {
+        view.backgroundColor = .systemBackground
+        navigationItem.title = "상품등록"
+    }
+
+    private func setOuterScrollView() {
         view.addSubview(outerScrollView)
         NSLayoutConstraint.activate([
             outerScrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
@@ -39,7 +44,7 @@ class ItemManagingViewController: UIViewController {
         ])
     }
 
-    func setStackView() {
+    private func setStackView() {
         outerScrollView.addSubview(outerStackView)
         NSLayoutConstraint.activate([
             outerStackView.topAnchor.constraint(equalTo: outerScrollView.topAnchor),
