@@ -56,6 +56,35 @@ class ItemManagingViewController: UIViewController {
         return textField
     }()
 
+    private let itemCurrencyLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.text = "KRW"
+        return label
+    }()
+
+    private let itemPriceTextField: UITextField = {
+        let textField = UITextField()
+        textField.translatesAutoresizingMaskIntoConstraints = false
+        textField.keyboardType = .numberPad
+        textField.placeholder = "가격"
+        return textField
+    }()
+
+    private let itemDiscountedPriceTextField: UITextField = {
+        let textField = UITextField()
+        textField.translatesAutoresizingMaskIntoConstraints = false
+        textField.keyboardType = .numberPad
+        textField.placeholder = "할인가격 (Optional)"
+        return textField
+    }()
+
+    private let priceView: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+
     override func viewDidLoad() {
         super.viewDidLoad()
         view.addSubview(outerScrollView)
@@ -63,6 +92,7 @@ class ItemManagingViewController: UIViewController {
         setOuterScrollView()
         setOuterStackView()
         setImageSelectStackView()
+        setPriceView()
     }
 
     private func setItemManagingView() {
@@ -84,6 +114,7 @@ class ItemManagingViewController: UIViewController {
     private func setOuterStackView() {
         outerStackView.addArrangedSubview(imageSelectStackView)
         outerStackView.addArrangedSubview(itemTitleTextField)
+        outerStackView.addArrangedSubview(priceView)
         NSLayoutConstraint.activate([
             outerStackView.topAnchor.constraint(equalTo: outerScrollView.topAnchor),
             outerStackView.leadingAnchor.constraint(equalTo: outerScrollView.leadingAnchor),
@@ -111,6 +142,26 @@ class ItemManagingViewController: UIViewController {
         }
     }
 
+    private func setPriceView() {
+        itemPriceTextField.delegate = self
+        itemDiscountedPriceTextField.delegate = self
+
+        priceView.addSubview(itemCurrencyLabel)
+        priceView.addSubview(itemPriceTextField)
+        priceView.addSubview(itemDiscountedPriceTextField)
+        NSLayoutConstraint.activate([
+            priceView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.1),
+            itemCurrencyLabel.leadingAnchor.constraint(equalTo: priceView.leadingAnchor),
+            itemCurrencyLabel.centerYAnchor.constraint(equalTo: priceView.centerYAnchor),
+            itemPriceTextField.leadingAnchor.constraint(equalTo: itemCurrencyLabel.trailingAnchor, constant: 20),
+            itemPriceTextField.topAnchor.constraint(equalTo: priceView.topAnchor),
+            itemPriceTextField.heightAnchor.constraint(equalTo: priceView.heightAnchor, multiplier: 0.5),
+            itemDiscountedPriceTextField.leadingAnchor.constraint(equalTo: itemPriceTextField.leadingAnchor),
+            itemDiscountedPriceTextField.topAnchor.constraint(equalTo: itemPriceTextField.bottomAnchor),
+            itemDiscountedPriceTextField.heightAnchor.constraint(equalTo: priceView.heightAnchor, multiplier: 0.5)
+        ])
+    }
+
     @objc func registerItem() {
         navigationController?.popViewController(animated: true)
     }
@@ -128,5 +179,13 @@ class ItemManagingViewController: UIViewController {
 extension ItemManagingViewController: PHPickerViewControllerDelegate {
     func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
         dismiss(animated: true, completion: nil)
+    }
+}
+
+extension ItemManagingViewController: UITextFieldDelegate {
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        let allowedCharacters = CharacterSet.decimalDigits
+        let characterSet = CharacterSet(charactersIn: string)
+        return allowedCharacters.isSuperset(of: characterSet)
     }
 }
