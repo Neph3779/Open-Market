@@ -25,6 +25,7 @@ class ItemManagingViewController: UIViewController {
         let stackView = UIStackView()
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.axis = .vertical
+        stackView.spacing = 15
         stackView.isLayoutMarginsRelativeArrangement = true
         stackView.directionalLayoutMargins = NSDirectionalEdgeInsets(top: 0, leading: 15, bottom: 0, trailing: 15)
         return stackView
@@ -49,8 +50,15 @@ class ItemManagingViewController: UIViewController {
         return button
     }()
 
+    private let itemTitleTextField: UITextField = {
+        let textField = UITextField()
+        textField.placeholder = "상품명"
+        return textField
+    }()
+
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.addSubview(outerScrollView)
         setItemManagingView()
         setOuterScrollView()
         setOuterStackView()
@@ -64,7 +72,7 @@ class ItemManagingViewController: UIViewController {
     }
 
     private func setOuterScrollView() {
-        view.addSubview(outerScrollView)
+        outerScrollView.addSubview(outerStackView)
         NSLayoutConstraint.activate([
             outerScrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             outerScrollView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
@@ -74,7 +82,8 @@ class ItemManagingViewController: UIViewController {
     }
 
     private func setOuterStackView() {
-        outerScrollView.addSubview(outerStackView)
+        outerStackView.addArrangedSubview(imageSelectStackView)
+        outerStackView.addArrangedSubview(itemTitleTextField)
         NSLayoutConstraint.activate([
             outerStackView.topAnchor.constraint(equalTo: outerScrollView.topAnchor),
             outerStackView.leadingAnchor.constraint(equalTo: outerScrollView.leadingAnchor),
@@ -85,7 +94,6 @@ class ItemManagingViewController: UIViewController {
     }
 
     private func setImageSelectStackView() {
-        outerStackView.addArrangedSubview(imageSelectStackView)
         imageSelectStackView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.1).isActive = true
         imageSelectStackView.addArrangedSubview(imageAddButton)
         NSLayoutConstraint.activate([
