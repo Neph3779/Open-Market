@@ -8,6 +8,11 @@
 import UIKit
 
 class ItemManagingViewController: UIViewController {
+    private lazy var registerItemButton: UIBarButtonItem = {
+        let button = UIBarButtonItem(title: "등록", style: .done, target: self, action: #selector(registerItem))
+        return button
+    }()
+
     private let outerScrollView: UIScrollView = {
         let scrollView = UIScrollView()
         scrollView.translatesAutoresizingMaskIntoConstraints = false
@@ -32,6 +37,7 @@ class ItemManagingViewController: UIViewController {
     private func setItemManagingView() {
         view.backgroundColor = .systemBackground
         navigationItem.title = "상품등록"
+        navigationItem.rightBarButtonItem = registerItemButton
     }
 
     private func setOuterScrollView() {
@@ -53,5 +59,9 @@ class ItemManagingViewController: UIViewController {
             outerStackView.bottomAnchor.constraint(equalTo: outerScrollView.bottomAnchor),
             outerStackView.widthAnchor.constraint(equalTo: outerScrollView.widthAnchor)
         ])
+    }
+
+    @objc func registerItem() {
+        navigationController?.popViewController(animated: true)
     }
 }
