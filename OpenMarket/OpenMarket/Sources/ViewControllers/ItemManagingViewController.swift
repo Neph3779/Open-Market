@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import PhotosUI
 
 class ItemManagingViewController: UIViewController {
     private lazy var registerItemButton: UIBarButtonItem = {
@@ -24,14 +25,36 @@ class ItemManagingViewController: UIViewController {
         let stackView = UIStackView()
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.axis = .vertical
-        stackView.backgroundColor = .systemBackground
+        stackView.isLayoutMarginsRelativeArrangement = true
+        stackView.directionalLayoutMargins = NSDirectionalEdgeInsets(top: 0, leading: 15, bottom: 0, trailing: 15)
         return stackView
+    }()
+
+    private let imageSelectStackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        stackView.axis = .horizontal
+        stackView.alignment = .center
+        stackView.distribution = .equalCentering
+        stackView.spacing = 10
+        return stackView
+    }()
+
+    private let imageAddButton: UIButton = {
+        let button = UIButton()
+        button.setImage(UIImage(systemName: "photo.on.rectangle.angled"), for: .normal)
+        button.addTarget(self, action: #selector(presentPicker), for: .touchUpInside)
+        button.layer.borderColor = UIColor.systemGray3.cgColor
+        button.layer.borderWidth = 1
+        return button
     }()
 
     override func viewDidLoad() {
         super.viewDidLoad()
         setItemManagingView()
         setOuterScrollView()
+        setOuterStackView()
+        setImageSelectStackView()
     }
 
     private func setItemManagingView() {
@@ -50,7 +73,7 @@ class ItemManagingViewController: UIViewController {
         ])
     }
 
-    private func setStackView() {
+    private func setOuterStackView() {
         outerScrollView.addSubview(outerStackView)
         NSLayoutConstraint.activate([
             outerStackView.topAnchor.constraint(equalTo: outerScrollView.topAnchor),
@@ -61,7 +84,41 @@ class ItemManagingViewController: UIViewController {
         ])
     }
 
+    private func setImageSelectStackView() {
+        outerStackView.addArrangedSubview(imageSelectStackView)
+        imageSelectStackView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.1).isActive = true
+        imageSelectStackView.addArrangedSubview(imageAddButton)
+        NSLayoutConstraint.activate([
+            imageAddButton.heightAnchor.constraint(equalTo: imageSelectStackView.heightAnchor, multiplier: 0.6),
+            imageAddButton.widthAnchor.constraint(equalTo: imageAddButton.heightAnchor)
+        ])
+        for _ in 1...5 {
+            let imageView = UIImageView()
+            imageView.backgroundColor = .systemGray
+            imageSelectStackView.addArrangedSubview(imageView)
+            NSLayoutConstraint.activate([
+                imageView.heightAnchor.constraint(equalTo: imageAddButton.heightAnchor),
+                imageView.widthAnchor.constraint(equalTo: imageView.heightAnchor)
+            ])
+        }
+    }
+
     @objc func registerItem() {
         navigationController?.popViewController(animated: true)
+    }
+
+    @objc func presentPicker() {
+        var configuration = PHPickerConfiguration()
+        configuration.filter = .images
+        configuration.selectionLimit = 5
+        let pickerViewController = PHPickerViewController(configuration: configuration)
+        pickerViewController.delegate = self
+        present(pickerViewController, animated: true, completion: nil)
+    }
+}
+
+extension ItemManagingViewController: PHPickerViewControllerDelegate {
+    func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
+        dismiss(animated: true, completion: nil)
     }
 }
