@@ -15,6 +15,14 @@ class ItemManagingViewController: UIViewController {
         return scrollView
     }()
 
+    let outerStackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        stackView.axis = .vertical
+        stackView.backgroundColor = .systemBackground
+        return stackView
+    }()
+
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
@@ -28,6 +36,17 @@ class ItemManagingViewController: UIViewController {
             outerScrollView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
             outerScrollView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
             outerScrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+        ])
+    }
+
+    func setStackView() {
+        outerScrollView.addSubview(outerStackView)
+        NSLayoutConstraint.activate([
+            outerStackView.topAnchor.constraint(equalTo: outerScrollView.topAnchor),
+            outerStackView.leadingAnchor.constraint(equalTo: outerScrollView.leadingAnchor),
+            outerStackView.trailingAnchor.constraint(equalTo: outerScrollView.trailingAnchor),
+            outerStackView.bottomAnchor.constraint(equalTo: outerScrollView.bottomAnchor),
+            outerStackView.widthAnchor.constraint(equalTo: outerScrollView.widthAnchor)
         ])
     }
 }
