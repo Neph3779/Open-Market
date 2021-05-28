@@ -27,9 +27,11 @@ class ItemManagingViewController: UIViewController {
         stackView.axis = .vertical
         stackView.spacing = 15
         stackView.isLayoutMarginsRelativeArrangement = true
-        stackView.directionalLayoutMargins = NSDirectionalEdgeInsets(top: 0, leading: 15, bottom: 0, trailing: 15)
+        stackView.directionalLayoutMargins = NSDirectionalEdgeInsets(top: 15, leading: 15, bottom: 0, trailing: 15)
         return stackView
     }()
+
+    private let itemImageViews: [UIImageView] = (1...5).map { _ in UIImageView() }
 
     private let imageSelectStackView: UIStackView = {
         let stackView = UIStackView()
@@ -159,19 +161,19 @@ class ItemManagingViewController: UIViewController {
     }
 
     private func setImageSelectStackView() {
-        imageSelectStackView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.1).isActive = true
         imageSelectStackView.addArrangedSubview(imageAddButton)
+
         NSLayoutConstraint.activate([
-            imageAddButton.heightAnchor.constraint(equalTo: imageSelectStackView.heightAnchor, multiplier: 0.6),
-            imageAddButton.widthAnchor.constraint(equalTo: imageAddButton.heightAnchor)
+            imageAddButton.widthAnchor.constraint(equalTo: imageSelectStackView.widthAnchor, multiplier: 1/6, constant: -10),
+            imageAddButton.heightAnchor.constraint(equalTo: imageAddButton.widthAnchor)
         ])
-        for _ in 1...5 {
-            let imageView = UIImageView()
-            imageView.backgroundColor = .systemGray
-            imageSelectStackView.addArrangedSubview(imageView)
+
+        itemImageViews.forEach { itemImageView in
+            itemImageView.translatesAutoresizingMaskIntoConstraints = false
+            imageSelectStackView.addArrangedSubview(itemImageView)
             NSLayoutConstraint.activate([
-                imageView.heightAnchor.constraint(equalTo: imageAddButton.heightAnchor),
-                imageView.widthAnchor.constraint(equalTo: imageView.heightAnchor)
+                itemImageView.heightAnchor.constraint(equalTo: imageAddButton.heightAnchor),
+                itemImageView.widthAnchor.constraint(equalTo: imageAddButton.widthAnchor)
             ])
         }
     }
@@ -222,7 +224,26 @@ class ItemManagingViewController: UIViewController {
 
 extension ItemManagingViewController: PHPickerViewControllerDelegate {
     func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
-        dismiss(animated: true, completion: nil)
+        let items = results.map(\.itemProvider)
+        var pickedImages: [UIImage] = []
+
+        if items.isEmpty {
+            dismiss(animated: true, completion: nil)
+        }
+
+        for index in 0..<items.count {
+            items[index].loadObject(ofClass: UIImage.self) { [self] image, _ in
+                guard let itemImage = image as? UIImage else { return }
+                pickedImages.append(itemImage)
+
+                DispatchQueue.main.async {
+                    itemImageViews[index].image = itemImage
+                    if index == items.count - 1 {
+                        dismiss(animated: true, completion: nil)
+                    }
+                }
+            }
+        }
     }
 }
 
