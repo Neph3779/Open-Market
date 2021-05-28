@@ -209,7 +209,53 @@ class ItemManagingViewController: UIViewController {
     }
 
     @objc func registerItem() {
+        guard let title = itemTitleTextField.text,
+              let descriptions = itemDescriptionTextView.text,
+              let priceText = itemPriceTextField.text,
+              let price = Int(priceText),
+              let currency = itemCurrencyLabel.text,
+              let stockText = itemStockTextField.text,
+              let stock = Int(stockText),
+              let password = passwordTextField.text else {
+            return
+        }
+
+        let itemImageData = getItemImageData()
+
+        let postingItem = PostingItem(title: title, descriptions: descriptions, price: price,
+                                      currency: currency, stock: stock, discountedPrice: nil,
+                                      images: itemImageData, password: password)
+
+        OpenMarketService().postItem(data: postingItem, completionHandler: postCompletionHandler(result:))
+
         navigationController?.popViewController(animated: true)
+    }
+
+    func getItemImageData() -> [Data] {
+        var itemImageData: [Data] = []
+
+        for imageView in itemImageViews {
+            guard let itemImage = imageView.image,
+                  let imageData = itemImage.jpegData(compressionQuality: 0) else { continue }
+            let imageDataSize = Double(imageData.count) / 1000.0
+            if imageDataSize > 300 { continue }
+            itemImageData.append(imageData)
+        }
+
+        return itemImageData
+    }
+
+    func postCompletionHandler(result: Result<MarketItem, OpenMarketError>) {
+        switch result {
+        case .success(let item):
+            print(item.id)
+        case .failure(let error):
+            DispatchQueue.main.async {
+                self.present(UIAlertController(title: error.name, message: error.description,
+                                          preferredStyle: .alert), animated: true,
+                        completion: { self.dismiss(animated: true, completion: nil) })
+            }
+        }
     }
 
     @objc func presentPicker() {
