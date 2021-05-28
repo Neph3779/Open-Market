@@ -8,6 +8,7 @@
 import UIKit
 import PhotosUI
 
+// MARK: - View
 class ItemManagingViewController: UIViewController {
     private let manageMode: ManageMode
 
@@ -229,7 +230,36 @@ class ItemManagingViewController: UIViewController {
             outerStackView.insertArrangedSubview(UIView.divisionLine, at: 2 * index  + 1)
         }
     }
+}
 
+extension ItemManagingViewController: PHPickerViewControllerDelegate {
+    func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
+        let items = results.map(\.itemProvider)
+        var pickedImages: [UIImage] = []
+
+        if items.isEmpty {
+            dismiss(animated: true, completion: nil)
+        }
+
+        for index in 0..<items.count {
+            items[index].loadObject(ofClass: UIImage.self) { [self] image, _ in
+                guard let itemImage = image as? UIImage else { return }
+                pickedImages.append(itemImage)
+
+                DispatchQueue.main.async {
+                    itemImageViews[index].image = itemImage
+                    if index == items.count - 1 {
+                        dismiss(animated: true, completion: nil)
+                    }
+                }
+            }
+        }
+    }
+}
+
+// MARK: - Functions
+
+extension ItemManagingViewController {
     @objc func registerItem() {
         guard let title = itemTitleTextField.text,
               let descriptions = itemDescriptionTextView.text,
@@ -290,30 +320,7 @@ class ItemManagingViewController: UIViewController {
     }
 }
 
-extension ItemManagingViewController: PHPickerViewControllerDelegate {
-    func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
-        let items = results.map(\.itemProvider)
-        var pickedImages: [UIImage] = []
-
-        if items.isEmpty {
-            dismiss(animated: true, completion: nil)
-        }
-
-        for index in 0..<items.count {
-            items[index].loadObject(ofClass: UIImage.self) { [self] image, _ in
-                guard let itemImage = image as? UIImage else { return }
-                pickedImages.append(itemImage)
-
-                DispatchQueue.main.async {
-                    itemImageViews[index].image = itemImage
-                    if index == items.count - 1 {
-                        dismiss(animated: true, completion: nil)
-                    }
-                }
-            }
-        }
-    }
-}
+// MARK: - Delegates
 
 extension ItemManagingViewController: UITextFieldDelegate {
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
@@ -339,6 +346,8 @@ extension ItemManagingViewController: UITextViewDelegate {
     }
 }
 
+
+// MARK: - Enums
 extension ItemManagingViewController {
     private enum Style {
         static let currencyTrailingMargin: CGFloat = 20
