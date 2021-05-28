@@ -107,6 +107,14 @@ class ItemManagingViewController: UIViewController {
         return textView
     }()
 
+    private let passwordTextField: UITextField = {
+        let textField = UITextField()
+        textField.isSecureTextEntry = true
+        textField.textContentType = .password
+        textField.placeholder = "비밀번호"
+        return textField
+    }()
+
     override func viewDidLoad() {
         super.viewDidLoad()
         view.addSubview(outerScrollView)
@@ -138,6 +146,7 @@ class ItemManagingViewController: UIViewController {
         outerStackView.addArrangedSubview(itemTitleTextField)
         outerStackView.addArrangedSubview(priceView)
         outerStackView.addArrangedSubview(itemStockTextField)
+        outerStackView.addArrangedSubview(passwordTextField)
         outerStackView.addArrangedSubview(itemDescriptionTextView)
         NSLayoutConstraint.activate([
             outerStackView.topAnchor.constraint(equalTo: outerScrollView.topAnchor),
