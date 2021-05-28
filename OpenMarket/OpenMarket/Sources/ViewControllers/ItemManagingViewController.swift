@@ -27,13 +27,16 @@ class ItemManagingViewController: UIViewController {
         let stackView = UIStackView()
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.axis = .vertical
-        stackView.spacing = 15
+        stackView.spacing = Style.stackViewMargin
         stackView.isLayoutMarginsRelativeArrangement = true
-        stackView.directionalLayoutMargins = NSDirectionalEdgeInsets(top: 15, leading: 15, bottom: 0, trailing: 15)
+        stackView.directionalLayoutMargins = NSDirectionalEdgeInsets(top: Style.stackViewMargin,
+                                                                     leading: Style.stackViewMargin,
+                                                                     bottom: 0,
+                                                                     trailing: Style.stackViewMargin)
         return stackView
     }()
 
-    private let itemImageViews: [UIImageView] = (1...5).map { _ in UIImageView() }
+    private let itemImageViews: [UIImageView] = (1...Style.numberOfImages).map { _ in UIImageView() }
 
     private let imageSelectStackView: UIStackView = {
         let stackView = UIStackView()
@@ -41,7 +44,7 @@ class ItemManagingViewController: UIViewController {
         stackView.axis = .horizontal
         stackView.alignment = .center
         stackView.distribution = .equalCentering
-        stackView.spacing = 10
+        stackView.spacing = Style.imageSpacing
         return stackView
     }()
 
@@ -56,14 +59,14 @@ class ItemManagingViewController: UIViewController {
 
     private let itemTitleTextField: UITextField = {
         let textField = UITextField()
-        textField.placeholder = "상품명"
+        textField.placeholder = Style.itemTitlePlaceholder
         return textField
     }()
 
     private let itemCurrencyLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = Locale.current.currencyCode ?? "KRW"
+        label.text = Locale.current.currencyCode ?? Style.defaultCurrencyCode
         label.setContentHuggingPriority(.required, for: .horizontal)
         label.setContentCompressionResistancePriority(.required, for: .horizontal)
         return label
@@ -73,7 +76,7 @@ class ItemManagingViewController: UIViewController {
         let textField = UITextField()
         textField.translatesAutoresizingMaskIntoConstraints = false
         textField.keyboardType = .numberPad
-        textField.placeholder = "가격"
+        textField.placeholder = Style.itemPricePlaceholder
         return textField
     }()
 
@@ -81,7 +84,7 @@ class ItemManagingViewController: UIViewController {
         let textField = UITextField()
         textField.translatesAutoresizingMaskIntoConstraints = false
         textField.keyboardType = .numberPad
-        textField.placeholder = "할인가격 (Optional)"
+        textField.placeholder = Style.itemDiscountedPricePlaceholder
         return textField
     }()
 
@@ -96,7 +99,7 @@ class ItemManagingViewController: UIViewController {
         textField.translatesAutoresizingMaskIntoConstraints = false
         textField.delegate = self
         textField.keyboardType = .numberPad
-        textField.placeholder = "재고수량"
+        textField.placeholder = Style.itemStockPlaceholder
         return textField
     }()
 
@@ -106,7 +109,7 @@ class ItemManagingViewController: UIViewController {
         textView.delegate = self
         textView.isScrollEnabled = false
         textView.font = UIFont.preferredFont(forTextStyle: .body)
-        textView.text = "상품의 상세한 내용을 작성해주세요."
+        textView.text = Style.itemDescriptionPlaceholder
         textView.textColor = .lightGray
         return textView
     }()
@@ -115,7 +118,7 @@ class ItemManagingViewController: UIViewController {
         let textField = UITextField()
         textField.isSecureTextEntry = true
         textField.textContentType = .password
-        textField.placeholder = "비밀번호"
+        textField.placeholder = Style.passwordPlaceholder
         return textField
     }()
 
@@ -177,7 +180,9 @@ class ItemManagingViewController: UIViewController {
         imageSelectStackView.addArrangedSubview(imageAddButton)
 
         NSLayoutConstraint.activate([
-            imageAddButton.widthAnchor.constraint(equalTo: imageSelectStackView.widthAnchor, multiplier: 1/6, constant: -10),
+            imageAddButton.widthAnchor.constraint(equalTo: imageSelectStackView.widthAnchor,
+                                                  multiplier: Style.imageSize.multiplier,
+                                                  constant: Style.imageSize.constant),
             imageAddButton.heightAnchor.constraint(equalTo: imageAddButton.widthAnchor)
         ])
 
@@ -199,22 +204,22 @@ class ItemManagingViewController: UIViewController {
         priceView.addSubview(itemPriceTextField)
         priceView.addSubview(itemDiscountedPriceTextField)
         NSLayoutConstraint.activate([
-            priceView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.1),
+            priceView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: Style.priceViewHeightProportion),
             itemCurrencyLabel.leadingAnchor.constraint(equalTo: priceView.leadingAnchor),
             itemCurrencyLabel.centerYAnchor.constraint(equalTo: priceView.centerYAnchor),
-            itemPriceTextField.leadingAnchor.constraint(equalTo: itemCurrencyLabel.trailingAnchor, constant: 20),
+            itemPriceTextField.leadingAnchor.constraint(equalTo: itemCurrencyLabel.trailingAnchor, constant: Style.currencyTrailingMargin),
             itemPriceTextField.topAnchor.constraint(equalTo: priceView.topAnchor),
-            itemPriceTextField.heightAnchor.constraint(equalTo: priceView.heightAnchor, multiplier: 0.5),
+            itemPriceTextField.heightAnchor.constraint(equalTo: priceView.heightAnchor, multiplier: 1/2),
             itemPriceTextField.trailingAnchor.constraint(equalTo: priceView.trailingAnchor),
             itemDiscountedPriceTextField.leadingAnchor.constraint(equalTo: itemPriceTextField.leadingAnchor),
             itemDiscountedPriceTextField.topAnchor.constraint(equalTo: itemPriceTextField.bottomAnchor),
-            itemDiscountedPriceTextField.heightAnchor.constraint(equalTo: priceView.heightAnchor, multiplier: 0.5),
+            itemDiscountedPriceTextField.heightAnchor.constraint(equalTo: priceView.heightAnchor, multiplier: 1/2),
             itemDiscountedPriceTextField.trailingAnchor.constraint(equalTo: itemPriceTextField.trailingAnchor)
         ])
     }
 
     private func setItemDescriptionTextView() {
-        itemDescriptionTextView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.5).isActive = true
+        itemDescriptionTextView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: Style.descriptionViewProportion).isActive = true
     }
 
     private func setDivisionLine() {
@@ -254,8 +259,8 @@ class ItemManagingViewController: UIViewController {
         for imageView in itemImageViews {
             guard let itemImage = imageView.image,
                   let imageData = itemImage.jpegData(compressionQuality: 0) else { continue }
-            let imageDataSize = Double(imageData.count) / 1000.0
-            if imageDataSize > 300 { continue }
+            let imageKBSize = Double(imageData.count) / 1000.0
+            if imageKBSize > 300 { continue }
             itemImageData.append(imageData)
         }
 
@@ -335,6 +340,23 @@ extension ItemManagingViewController: UITextViewDelegate {
 }
 
 extension ItemManagingViewController {
+    private enum Style {
+        static let currencyTrailingMargin: CGFloat = 20
+        static let defaultCurrencyCode: String = "KRW"
+        static let descriptionViewProportion: CGFloat = 0.5
+        static let imageSize: (multiplier: CGFloat, constant: CGFloat) = (1/6, -10)
+        static let imageSpacing: CGFloat = 10
+        static let itemDescriptionPlaceholder: String = "상품의 상세한 내용을 작성해주세요."
+        static let itemDiscountedPricePlaceholder: String = "할인가격 (Optional)"
+        static let itemPricePlaceholder: String = "가격"
+        static let itemStockPlaceholder: String = "재고수량"
+        static let itemTitlePlaceholder: String = "상품명"
+        static let numberOfImages: Int = 5
+        static let passwordPlaceholder: String = "비밀번호"
+        static let priceViewHeightProportion: CGFloat = 0.1
+        static let stackViewMargin: CGFloat = 15
+    }
+
     enum ManageMode {
         case register
         case modify
