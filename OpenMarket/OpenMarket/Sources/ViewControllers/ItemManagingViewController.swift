@@ -59,7 +59,7 @@ class ItemManagingViewController: UIViewController {
     private let itemCurrencyLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "KRW"
+        label.text = Locale.current.currencyCode ?? "KRW"
         label.setContentHuggingPriority(.required, for: .horizontal)
         label.setContentCompressionResistancePriority(.required, for: .horizontal)
         return label
@@ -85,6 +85,15 @@ class ItemManagingViewController: UIViewController {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
+    }()
+
+    private lazy var itemStockTextField: UITextField = {
+        let textField = UITextField()
+        textField.translatesAutoresizingMaskIntoConstraints = false
+        textField.delegate = self
+        textField.keyboardType = .numberPad
+        textField.placeholder = "재고수량"
+        return textField
     }()
 
     override func viewDidLoad() {
@@ -117,6 +126,7 @@ class ItemManagingViewController: UIViewController {
         outerStackView.addArrangedSubview(imageSelectStackView)
         outerStackView.addArrangedSubview(itemTitleTextField)
         outerStackView.addArrangedSubview(priceView)
+        outerStackView.addArrangedSubview(itemStockTextField)
         NSLayoutConstraint.activate([
             outerStackView.topAnchor.constraint(equalTo: outerScrollView.topAnchor),
             outerStackView.leadingAnchor.constraint(equalTo: outerScrollView.leadingAnchor),
