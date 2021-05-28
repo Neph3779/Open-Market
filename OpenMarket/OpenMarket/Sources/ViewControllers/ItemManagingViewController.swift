@@ -9,8 +9,10 @@ import UIKit
 import PhotosUI
 
 class ItemManagingViewController: UIViewController {
+    private let manageMode: ManageMode
+
     private lazy var registerItemButton: UIBarButtonItem = {
-        let button = UIBarButtonItem(title: "등록", style: .done, target: self, action: #selector(registerItem))
+        let button = UIBarButtonItem(title: manageMode.buttonTitle, style: .done, target: self, action: #selector(registerItem))
         return button
     }()
 
@@ -117,6 +119,16 @@ class ItemManagingViewController: UIViewController {
         return textField
     }()
 
+    init(mode: ManageMode) {
+        manageMode = mode
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    required init?(coder: NSCoder) {
+        manageMode = .register
+        super.init(coder: coder)
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
         view.addSubview(outerScrollView)
@@ -131,7 +143,7 @@ class ItemManagingViewController: UIViewController {
 
     private func setItemManagingView() {
         view.backgroundColor = .systemBackground
-        navigationItem.title = "상품등록"
+        navigationItem.title = manageMode.navigationbarTitle
         navigationItem.rightBarButtonItem = registerItemButton
     }
 
@@ -318,6 +330,30 @@ extension ItemManagingViewController: UITextViewDelegate {
         if textView.text.isEmpty {
             textView.text = "상품의 상세한 내용을 작성해주세요."
             textView.textColor = .lightGray
+        }
+    }
+}
+
+extension ItemManagingViewController {
+    enum ManageMode {
+        case register
+        case modify
+
+        var navigationbarTitle: String {
+            switch self {
+            case .register:
+                return "상품등록"
+            case .modify:
+                return "상품수정"
+            }
+        }
+        var buttonTitle: String {
+            switch self {
+            case .register:
+                return "등록"
+            case .modify:
+                return "수정"
+            }
         }
     }
 }

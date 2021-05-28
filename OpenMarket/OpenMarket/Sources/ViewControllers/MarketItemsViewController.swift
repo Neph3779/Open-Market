@@ -124,7 +124,7 @@ class MarketItemsViewController: UIViewController {
     }
 
     @objc func moveToRegisterView() {
-        let view = ItemManagingViewController()
+        let view = ItemManagingViewController(mode: .register)
         navigationItem.backButtonTitle = "취소"
         navigationController?.pushViewController(view, animated: true)
     }
