@@ -28,12 +28,7 @@ class ItemListCell: UICollectionViewCell {
     private let disclosureIndicatorImageView = ItemCellImageView(systemName: "chevron.forward")
     private let stockLabel = StockLabel(textColor: .lightGray)
 
-    private let divisionLine: UIView = {
-        let view = UIView()
-        view.translatesAutoresizingMaskIntoConstraints = false
-        view.backgroundColor = .systemGray3
-        return view
-    }()
+    private let divisionLine = UIView.divisionLine
 
     var item: MarketPage.Item? {
         didSet {
@@ -131,7 +126,6 @@ class ItemListCell: UICollectionViewCell {
         ]
 
         let divisionLineCosntraints = [
-            divisionLine.heightAnchor.constraint(equalToConstant: 1),
             divisionLine.leadingAnchor.constraint(equalTo: imageView.leadingAnchor),
             divisionLine.trailingAnchor.constraint(equalTo: self.trailingAnchor),
             divisionLine.bottomAnchor.constraint(equalTo: self.bottomAnchor)
