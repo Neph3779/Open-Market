@@ -125,6 +125,7 @@ class ItemManagingViewController: UIViewController {
         setOuterStackView()
         setImageSelectStackView()
         setPriceView()
+        setItemDescriptionTextView()
         setDivisionLine()
     }
 
@@ -198,6 +199,10 @@ class ItemManagingViewController: UIViewController {
             itemDiscountedPriceTextField.heightAnchor.constraint(equalTo: priceView.heightAnchor, multiplier: 0.5),
             itemDiscountedPriceTextField.trailingAnchor.constraint(equalTo: itemPriceTextField.trailingAnchor)
         ])
+    }
+
+    private func setItemDescriptionTextView() {
+        itemDescriptionTextView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.5).isActive = true
     }
 
     private func setDivisionLine() {
