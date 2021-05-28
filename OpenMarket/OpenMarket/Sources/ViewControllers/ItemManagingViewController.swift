@@ -96,6 +96,17 @@ class ItemManagingViewController: UIViewController {
         return textField
     }()
 
+    private lazy var itemDescriptionTextView: UITextView = {
+        let textView = UITextView()
+        textView.isEditable = true
+        textView.delegate = self
+        textView.isScrollEnabled = false
+        textView.font = UIFont.preferredFont(forTextStyle: .body)
+        textView.text = "상품의 상세한 내용을 작성해주세요."
+        textView.textColor = .lightGray
+        return textView
+    }()
+
     override func viewDidLoad() {
         super.viewDidLoad()
         view.addSubview(outerScrollView)
@@ -127,6 +138,7 @@ class ItemManagingViewController: UIViewController {
         outerStackView.addArrangedSubview(itemTitleTextField)
         outerStackView.addArrangedSubview(priceView)
         outerStackView.addArrangedSubview(itemStockTextField)
+        outerStackView.addArrangedSubview(itemDescriptionTextView)
         NSLayoutConstraint.activate([
             outerStackView.topAnchor.constraint(equalTo: outerScrollView.topAnchor),
             outerStackView.leadingAnchor.constraint(equalTo: outerScrollView.leadingAnchor),
@@ -201,5 +213,21 @@ extension ItemManagingViewController: UITextFieldDelegate {
         let allowedCharacters = CharacterSet.decimalDigits
         let characterSet = CharacterSet(charactersIn: string)
         return allowedCharacters.isSuperset(of: characterSet)
+    }
+}
+
+extension ItemManagingViewController: UITextViewDelegate {
+    func textViewDidBeginEditing(_ textView: UITextView) {
+        if textView.textColor == UIColor.lightGray {
+            textView.text = nil
+            textView.textColor = nil
+        }
+    }
+
+    func textViewDidEndEditing(_ textView: UITextView) {
+        if textView.text.isEmpty {
+            textView.text = "상품의 상세한 내용을 작성해주세요."
+            textView.textColor = .lightGray
+        }
     }
 }
