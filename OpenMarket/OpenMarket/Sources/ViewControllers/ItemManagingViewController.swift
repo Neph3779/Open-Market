@@ -60,6 +60,8 @@ class ItemManagingViewController: UIViewController {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "KRW"
+        label.setContentHuggingPriority(.required, for: .horizontal)
+        label.setContentCompressionResistancePriority(.required, for: .horizontal)
         return label
     }()
 
@@ -156,9 +158,11 @@ class ItemManagingViewController: UIViewController {
             itemPriceTextField.leadingAnchor.constraint(equalTo: itemCurrencyLabel.trailingAnchor, constant: 20),
             itemPriceTextField.topAnchor.constraint(equalTo: priceView.topAnchor),
             itemPriceTextField.heightAnchor.constraint(equalTo: priceView.heightAnchor, multiplier: 0.5),
+            itemPriceTextField.trailingAnchor.constraint(equalTo: priceView.trailingAnchor),
             itemDiscountedPriceTextField.leadingAnchor.constraint(equalTo: itemPriceTextField.leadingAnchor),
             itemDiscountedPriceTextField.topAnchor.constraint(equalTo: itemPriceTextField.bottomAnchor),
-            itemDiscountedPriceTextField.heightAnchor.constraint(equalTo: priceView.heightAnchor, multiplier: 0.5)
+            itemDiscountedPriceTextField.heightAnchor.constraint(equalTo: priceView.heightAnchor, multiplier: 0.5),
+            itemDiscountedPriceTextField.trailingAnchor.constraint(equalTo: itemPriceTextField.trailingAnchor)
         ])
     }
 
