@@ -9,8 +9,9 @@ import UIKit
 import PhotosUI
 
 // MARK: - View
+
 class ItemManagingViewController: UIViewController {
-    private let manageMode: ManageMode
+    private var manageMode: ManageMode = .register
 
     private lazy var registerItemButton: UIBarButtonItem = {
         let button = UIBarButtonItem(title: manageMode.buttonTitle, style: .done, target: self, action: #selector(registerItem))
@@ -129,7 +130,6 @@ class ItemManagingViewController: UIViewController {
     }
 
     required init?(coder: NSCoder) {
-        manageMode = .register
         super.init(coder: coder)
     }
 
@@ -229,31 +229,53 @@ class ItemManagingViewController: UIViewController {
         for (index, _) in outerStackViewElements {
             outerStackView.insertArrangedSubview(UIView.divisionLine, at: 2 * index  + 1)
         }
-    }
+    } // FIXME: 너무 난해함 읽기 쉽게 하나하나 넣어주는게 더 나을듯
 }
 
 extension ItemManagingViewController: PHPickerViewControllerDelegate {
     func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
         let items = results.map(\.itemProvider)
+        let lastItemIndex = items.count - 1
         var pickedImages: [UIImage] = []
 
         if items.isEmpty {
             dismiss(animated: true, completion: nil)
         }
 
-        for index in 0..<items.count {
-            items[index].loadObject(ofClass: UIImage.self) { [self] image, _ in
-                guard let itemImage = image as? UIImage else { return }
-                pickedImages.append(itemImage)
+        for index in 0...lastItemIndex {
+            items[index].loadObject(ofClass: UIImage.self) { (image, _) in
+                if let itemImage = image as? UIImage,
+                   let dataSize = itemImage.jpegData(compressionQuality: 1)?.count,
+                   dataSize / 1000 < 300 {
+                    pickedImages.append(itemImage)
+                }
 
-                DispatchQueue.main.async {
-                    itemImageViews[index].image = itemImage
-                    if index == items.count - 1 {
-                        dismiss(animated: true, completion: nil)
-                    }
+                if index == lastItemIndex {
+                    let didErrorOccurred = items.count != pickedImages.count
+                    self.pickerLastCompletion(pickedImages: pickedImages, didErrorOccurred: didErrorOccurred)
                 }
             }
         }
+    }
+
+    func pickerLastCompletion(pickedImages: [UIImage], didErrorOccurred: Bool) {
+        DispatchQueue.main.async {
+            for index in 0..<pickedImages.count {
+                self.itemImageViews[index].image = pickedImages[index]
+            }
+
+            didErrorOccurred ? self.dismiss(animated: true, completion: self.presentOverSizeError) : self.dismiss(animated: true, completion: nil)
+        }
+    }
+
+    func presentOverSizeError() {
+        let alert = UIAlertController(title: "선택한 이미지 중 업로드 할 수 없는 이미지가 포함되어있어요",
+                                      message: "이미지의 크기는 300Kb 이하여야 합니다🥲",
+                                      preferredStyle: .alert)
+
+        let yesAction = UIAlertAction(title: "확인", style: .cancel) { _ in  self.dismiss(animated: true, completion: nil) }
+        alert.addAction(yesAction)
+        present(alert, animated: true, completion: nil)
     }
 }
 
@@ -303,9 +325,10 @@ extension ItemManagingViewController {
             print(item.id)
         case .failure(let error):
             DispatchQueue.main.async {
-                self.present(UIAlertController(title: error.name, message: error.description,
-                                          preferredStyle: .alert), animated: true,
-                        completion: { self.dismiss(animated: true, completion: nil) })
+                let alert = UIAlertController(title: error.name, message: error.description, preferredStyle: .alert)
+                let yesAction = UIAlertAction(title: "확인", style: .cancel) { _ in  self.dismiss(animated: true, completion: nil) }
+                alert.addAction(yesAction)
+                self.present(alert, animated: true, completion: nil)
             }
         }
     }
@@ -345,7 +368,6 @@ extension ItemManagingViewController: UITextViewDelegate {
         }
     }
 }
-
 
 // MARK: - Enums
 extension ItemManagingViewController {
