@@ -32,7 +32,7 @@ class MockSessionManager: SessionManagerProtocol {
                                         data: APIModel,
                                         completionHandler: @escaping (Result<Data, OpenMarketError>) -> Void) {
         switch method {
-        case .post where path == .item():
+        case .post where path == .item(id: 1):
             completionHandler(.success(item))
         case .patch where path == .item(id: 1), .delete where path == .item(id: 1):
             completionHandler(.success(item))

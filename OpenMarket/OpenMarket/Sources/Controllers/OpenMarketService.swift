@@ -9,13 +9,14 @@ import Foundation
 
 class OpenMarketService {
     private let sessionManager: SessionManagerProtocol
+    private let identifier = ""
 
     init(sessionManager: SessionManagerProtocol = SessionManager.shared) {
         self.sessionManager = sessionManager
     }
 
-    func getPage(id: Int, completionHandler: @escaping (Result<MarketPage, OpenMarketError>) -> Void) {
-        sessionManager.request(method: .get, path: .page(id: id)) { result in
+    func getPage(id: Int, itemsPerPage: Int = 100, completionHandler: @escaping (Result<MarketPage, OpenMarketError>) -> Void) {
+        sessionManager.getProductList(pageNumber: id, itemsPerPage: itemsPerPage) { result in
             switch result {
             case .failure(let error):
                 completionHandler(.failure(error))
@@ -29,7 +30,7 @@ class OpenMarketService {
     }
 
     func getItem(id: Int, completionHandler: @escaping (Result<MarketItem, OpenMarketError>) -> Void) {
-        sessionManager.request(method: .get, path: .item(id: id)) { result in
+        sessionManager.getProductDetail(productId: id) { result in
             switch result {
             case .failure(let error):
                 completionHandler(.failure(error))
@@ -43,7 +44,7 @@ class OpenMarketService {
     }
 
     func postItem(data: PostingItem, completionHandler: @escaping (Result<MarketItem, OpenMarketError>) -> Void) {
-        sessionManager.request(method: .post, path: .item(), data: data) { result in
+        sessionManager.postProduct(identifier: identifier) { result in
             switch result {
             case .failure(let error):
                 completionHandler(.failure(error))
@@ -57,7 +58,7 @@ class OpenMarketService {
     }
 
     func patchItem(id: Int, data: PatchingItem, completionHandler: @escaping (Result<MarketItem, OpenMarketError>) -> Void) {
-        sessionManager.request(method: .patch, path: .item(id: id), data: data) { result in
+        sessionManager.modifyProduct(productId: id, identifier: identifier) { result in
             switch result {
             case .failure(let error):
                 completionHandler(.failure(error))
@@ -70,8 +71,8 @@ class OpenMarketService {
         }
     }
 
-    func deleteItem(id: Int, data: DeletingItem, completionHandler: @escaping (Result<MarketItem, OpenMarketError>) -> Void) {
-        sessionManager.request(method: .delete, path: .item(id: id), data: data) { result in
+    func deleteItem(deleteURI: String, completionHandler: @escaping (Result<MarketItem, OpenMarketError>) -> Void) {
+        sessionManager.deleteProduct(deleteURI: deleteURI, identifier: identifier) { result in
             switch result {
             case .failure(let error):
                 completionHandler(.failure(error))
