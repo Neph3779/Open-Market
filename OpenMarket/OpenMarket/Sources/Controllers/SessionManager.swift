@@ -223,7 +223,6 @@ class SessionManager: SessionManagerProtocol {
         return request
     }
 
-
     private func headerConfiguredRequest(method: HTTPMethod, url: URL) throws -> URLRequest {
         var request = URLRequest(url: url)
 

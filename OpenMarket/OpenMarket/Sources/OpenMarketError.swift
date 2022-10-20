@@ -26,19 +26,19 @@ enum OpenMarketError: Error, Equatable {
     var description: String {
         switch self {
         case .invalidData:
-            return "서버로부터 원하는 데이터가 도착하지 않았어요!"
+            return "유효하지 않은 데이터입니다."
         case .didNotReceivedResponse:
-            return "서버로부터 응답이 오지 않네요.. OTL"
+            return "서버로부터 응답이 없습니다."
         case .wrongResponse(let statusCode):
-            return "[Status Code: \(statusCode)] 저런! 원하는 응답이 오지 않았네요!"
+            return "[Status Code: \(statusCode)] 잘못된 응답입니다."
         case .didNotReceivedData:
-            return "서버로부터 데이터가 오지 않았어요.."
+            return "서버로부터 데이터 수신에 실패했습니다."
         case .sessionError:
             return "네트워크 연결이 불안정합니다."
         case .bodyEncodingError:
-            return "서버에 보내려는 데이터의 형식에 문제가 있습니다!"
+            return "송신 데이터 인코딩에 실패했습니다."
         default:
-            return "개발자가 일을 안하네요! 🤯"
+            return "Unknown Error"
         }
     }
 }
