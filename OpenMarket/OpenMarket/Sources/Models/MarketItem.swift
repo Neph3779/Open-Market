@@ -9,19 +9,25 @@ import Foundation
 
 struct MarketItem: Decodable {
     let id: Int
-    let title: String
-    let descriptions: String
-    let price: Int
-    let currency: String
+    let vendorId: Int
+    let vendorName: String
+    let name: String
+    let description: String
+    let thumbnail: String
+    let currency: String // Enum?
+    let price: Double
+    let bargainPrice: Double
+    let discountedPrice: Double
     let stock: Int
-    let discountedPrice: Int?
-    let thumbnails: [String]
-    let images: [String]
-    let registrationDate: TimeInterval
+    let createdAt: String
+    let issuedAt: String
 
     private enum CodingKeys: String, CodingKey {
-        case id, title, descriptions, price, currency, stock, thumbnails, images
+        case id, vendorName, name, description, thumbnail, currency, price, stock
+        case vendorId = "vendor_id"
+        case bargainPrice = "bargain_price"
         case discountedPrice = "discounted_price"
-        case registrationDate = "registration_date"
+        case createdAt = "created_at"
+        case issuedAt = "issued_at"
     }
 }

@@ -8,28 +8,17 @@
 import Foundation
 
 struct MarketPage: Decodable {
-    let id: Int
-    let items: [MarketPage.Item]
-
-    struct Item: Decodable {
-        let id: Int
-        let title: String
-        let price: Int
-        let currency: String
-        let stock: Int
-        let discountedPrice: Int?
-        let thumbnails: [String]
-        let registrationDate: TimeInterval
-
-        private enum CodingKeys: String, CodingKey {
-            case id, title, price, currency, stock, thumbnails
-            case discountedPrice = "discounted_price"
-            case registrationDate = "registration_date"
-        }
-    }
+    let pageNo: Int
+    let itemsPerPage: Int
+    let totalCount: Int
+    let offset: Int
+    let limit: Int
+    let lastPage: Int
+    let hasNext: Bool
+    let hasPrev: Bool
+    let pages: [MarketItem]
 
     private enum CodingKeys: String, CodingKey {
-        case items
-        case id = "page"
+        case pageNo, itemsPerPage, totalCount, offset, limit, lastPage, hasNext, hasPrev, pages
     }
 }

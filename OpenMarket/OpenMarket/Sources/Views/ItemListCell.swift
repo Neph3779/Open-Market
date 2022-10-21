@@ -30,9 +30,9 @@ class ItemListCell: UICollectionViewCell {
 
     private let divisionLine = UIView.divisionLine
 
-    var item: MarketPage.Item? {
+    var item: MarketItem? {
         didSet {
-            fetchImageDataTask = SessionManager.shared.fetchImageDataTask(urlString: item?.thumbnails.first) { data in
+            fetchImageDataTask = SessionManager.shared.fetchImageDataTask(urlString: item?.thumbnail) { data in
                 guard let image = UIImage(data: data) else { return }
                 DispatchQueue.main.async {
                     self.imageView.image = image
@@ -40,7 +40,7 @@ class ItemListCell: UICollectionViewCell {
             }
             fetchImageDataTask?.resume()
 
-            titleLabel.text = item?.title
+            titleLabel.text = item?.name
 
             if let currency = item?.currency,
                let price = item?.price {

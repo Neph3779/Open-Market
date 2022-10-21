@@ -42,7 +42,7 @@ class PriceLabel: ItemCellLabel {
         case normal, discounted
     }
 
-    func setText(by state: State, _ currency: String, _ price: Int) {
+    func setText(by state: State, _ currency: String, _ price: Double) {
         switch state {
         case .normal:
             text = "\(currency) \(price)"
