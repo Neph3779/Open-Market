@@ -50,7 +50,7 @@ class ItemManagingViewController: UIViewController {
         return stackView
     }()
 
-    private let imageAddButton: UIButton = {
+    private lazy var imageAddButton: UIButton = {
         let button = UIButton()
         button.setImage(UIImage(systemName: "photo.on.rectangle.angled"), for: .normal)
         button.addTarget(self, action: #selector(presentPicker), for: .touchUpInside)
@@ -229,7 +229,7 @@ class ItemManagingViewController: UIViewController {
         for (index, _) in outerStackViewElements {
             outerStackView.insertArrangedSubview(UIView.divisionLine, at: 2 * index  + 1)
         }
-    } // FIXME: 너무 난해함 읽기 쉽게 하나하나 넣어주는게 더 나을듯
+    }
 }
 
 extension ItemManagingViewController: PHPickerViewControllerDelegate {
@@ -240,6 +240,7 @@ extension ItemManagingViewController: PHPickerViewControllerDelegate {
 
         if items.isEmpty {
             dismiss(animated: true, completion: nil)
+            return
         }
 
         for index in 0...lastItemIndex {
