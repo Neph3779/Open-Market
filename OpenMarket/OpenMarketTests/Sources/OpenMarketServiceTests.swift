@@ -10,7 +10,7 @@ import XCTest
 
 class OpenMarketServiceTests: XCTestCase {
     var sut: OpenMarketService!
-    var dummyPostingItem: PostingItem!
+    var dummyPostingItem: PostRequest!
     var dummyPatchingItem: PatchingItem!
     var dummyDeletingItem: DeletingItem!
 
@@ -28,7 +28,7 @@ class OpenMarketServiceTests: XCTestCase {
     override func setUpWithError() throws {
         sut = OpenMarketService(sessionManager: MockSessionManager())
 
-        dummyPostingItem = PostingItem(title: title,
+        dummyPostingItem = PostRequest(title: title,
                                        descriptions: descriptions,
                                        price: price,
                                        currency: currency, stock: stock, discountedPrice: nil,

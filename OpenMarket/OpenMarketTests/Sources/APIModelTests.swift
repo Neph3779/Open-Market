@@ -9,11 +9,11 @@ import XCTest
 @testable import OpenMarket
 
 class APIModelTests: XCTestCase {
-    var dummyPostingItem: PostingItem!
+    var dummyPostingItem: PostRequest!
     var dummyPatchingItem: PatchingItem!
     
     override func setUpWithError() throws {
-        dummyPostingItem = PostingItem(title: "끔찍한 디버깅",
+        dummyPostingItem = PostRequest(title: "끔찍한 디버깅",
                                        descriptions: "끔찍한 디버깅입니다.",
                                        price: 1000,
                                        currency: "KRW",

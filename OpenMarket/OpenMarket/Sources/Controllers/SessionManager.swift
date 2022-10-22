@@ -7,86 +7,11 @@
 
 import Foundation
 
-enum HTTPMethod: String {
-    case get = "GET"
-    case post = "POST"
-    case patch = "PATCH"
-    case delete = "DELETE"
-
-    var mimeType: String? {
-        switch self {
-        case .get:
-            return nil
-        case .post, .patch:
-            return "multipart/form-data; boundary=\(RequestBodyEncoder.boundary)"
-        case .delete:
-            return "application/json"
-        }
-    }
-}
-
-enum RequestURLPath {
-    static var urlComponents: URLComponents = {
-        var urlComponents = URLComponents()
-        urlComponents.scheme = "https"
-        urlComponents.host = "openmarket.yagom-academy.kr"
-        return urlComponents
-    }()
-
-    static func healthCheck() throws -> URL {
-        var urlComponents = urlComponents
-        urlComponents.path = "/healthChecker"
-        guard let url = urlComponents.url else { throw OpenMarketError.invalidURL }
-        return url
-    }
-
-    static func getProductList(pageNumber: Int, itemsPerPage: Int = 100) throws -> URL {
-        var urlComponents = urlComponents
-        urlComponents.path = "/api/products"
-        urlComponents.queryItems = [
-            .init(name: "page_no", value: String(pageNumber)),
-            .init(name: "items_per_page", value: String(itemsPerPage))
-        ]
-        guard let url = urlComponents.url else { throw OpenMarketError.invalidURL }
-        return url
-    }
-
-    static func getProductDetail(productId: Int) throws -> URL {
-        var urlComponents = urlComponents
-        urlComponents.path = "/api/products/\(productId)"
-        guard let url = urlComponents.url else { throw OpenMarketError.invalidURL }
-        return url
-    }
-    static func postProduct() throws -> URL {
-        var urlComponents = urlComponents
-        urlComponents.path = "/api/products"
-        guard let url = urlComponents.url else { throw OpenMarketError.invalidURL }
-        return url
-    }
-    static func checkDeleteURI(productId: Int) throws -> URL {
-        var urlComponents = urlComponents
-        urlComponents.path = "/api/products/\(productId)/archived"
-        guard let url = urlComponents.url else { throw OpenMarketError.invalidURL }
-        return url
-    }
-    static func modifyProduct(productId: Int) throws -> URL {
-        var urlComponents = urlComponents
-        urlComponents.path = "/api/products/\(productId)"
-        guard let url = urlComponents.url else { throw OpenMarketError.invalidURL }
-        return url
-    }
-    static func deleteProduct(deleteURI: String) throws -> URL {
-        var urlComponents = urlComponents
-        urlComponents.path = "/api/products/\(deleteURI)"
-        guard let url = urlComponents.url else { throw OpenMarketError.invalidURL }
-        return url
-    }
-}
-
 class SessionManager: SessionManagerProtocol {
     static let shared = SessionManager(requestBodyEncoder: RequestBodyEncoder(), session: URLSession.shared)
     private let requestBodyEncoder: RequestBodyEncoderProtocol
     private let session: URLSession
+    private let identifier = "262da16e-50e9-11ed-acb7-dfcdeb599683"
 
     init(requestBodyEncoder: RequestBodyEncoderProtocol, session: URLSession) {
         self.requestBodyEncoder = requestBodyEncoder
@@ -97,7 +22,6 @@ class SessionManager: SessionManagerProtocol {
         do {
             let url = try RequestURLPath.healthCheck()
             let request = try headerConfiguredRequest(method: .get, url: url)
-
             dataTask(request: request, completionHandler: completionHandler).resume()
         } catch {
 
@@ -129,12 +53,13 @@ class SessionManager: SessionManagerProtocol {
         }
     }
 
-    func postProduct(identifier: String,
+    func postProduct(data: PostRequest,
                      completionHandler: @escaping (Result<Data, OpenMarketError>) -> Void) {
         do {
             let url = try RequestURLPath.postProduct()
-            let request = try headerConfiguredRequest(method: .post, url: url)
-            /* http body 구성 작업*/
+            var request = try headerConfiguredRequest(method: .post, url: url)
+            request.setValue(identifier, forHTTPHeaderField: "identifier")
+            request = try requestWithBody(request: request, method: .post, data: data)
 
             dataTask(request: request, completionHandler: completionHandler).resume()
         } catch {
@@ -143,7 +68,6 @@ class SessionManager: SessionManagerProtocol {
     }
 
     func checkDeleteURI(productId: Int,
-                        identifier: String,
                         completionHandler: @escaping (Result<Data, OpenMarketError>) -> Void) {
         do {
             let url = try RequestURLPath.checkDeleteURI(productId: productId)
@@ -157,13 +81,11 @@ class SessionManager: SessionManagerProtocol {
     }
 
     func modifyProduct(productId: Int,
-                       identifier: String,
                        completionHandler: @escaping (Result<Data, OpenMarketError>) -> Void) {
         do {
             let url = try RequestURLPath.modifyProduct(productId: productId)
             let request = try headerConfiguredRequest(method: .patch, url: url)
             /* http body 구성 작업*/
-
             dataTask(request: request, completionHandler: completionHandler).resume()
         } catch {
 
@@ -171,7 +93,6 @@ class SessionManager: SessionManagerProtocol {
     }
 
     func deleteProduct(deleteURI: String,
-                       identifier: String,
                        completionHandler: @escaping (Result<Data, OpenMarketError>) -> Void) {
         do {
             let url = try RequestURLPath.deleteProduct(deleteURI: deleteURI)
@@ -202,8 +123,9 @@ class SessionManager: SessionManagerProtocol {
         case .get:
             throw OpenMarketError.requestGETWithData
         case .post:
-            if data is PostingItem { break }
-            throw OpenMarketError.requestDataTypeNotMatch
+            if let postRequest = data as? PostRequest {
+                request.httpBody = try requestBodyEncoder.encodePostRequest(postRequest: postRequest)
+            } else { throw OpenMarketError.requestDataTypeNotMatch }
         case .patch:
             if data is PatchingItem { break }
             throw OpenMarketError.requestDataTypeNotMatch
@@ -212,21 +134,13 @@ class SessionManager: SessionManagerProtocol {
             throw OpenMarketError.requestDataTypeNotMatch
         }
 
-        do {
-            request.httpBody = try requestBodyEncoder.encode(data)
-        } catch let error as OpenMarketError {
-            throw error
-        }
-
         return request
     }
 
     private func headerConfiguredRequest(method: HTTPMethod, url: URL) throws -> URLRequest {
         var request = URLRequest(url: url)
-
         request.httpMethod = method.rawValue
         request.setValue(method.mimeType, forHTTPHeaderField: "Content-Type")
-
         return request
     }
 

@@ -9,5 +9,5 @@ import Foundation
 
 protocol RequestBodyEncoderProtocol {
     static var boundary: String { get }
-    func encode<T: RequestData>(_ value: T) throws -> Data
+    func encodePostRequest(postRequest: PostRequest) throws -> Data
 }

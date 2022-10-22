@@ -297,10 +297,12 @@ extension ItemManagingViewController {
 
         let itemImageData = getItemImageData()
 
-        let postingItem = PostingItem(title: title, descriptions: descriptions, price: price,
-                                      currency: currency, stock: stock, discountedPrice: nil,
-                                      images: itemImageData, password: password)
-
+        let postingItem = PostRequest(
+            parameters: PostRequest.Parameter(name: title, descriptions: descriptions, price: price,
+                                              currency: currency, stock: stock, discountedPrice: nil, secret: password),
+            images: [
+                PostRequest.PostingImage(fileName: "", imageData: Data()) // FIXME: 이미지 로직 필요
+            ])
         OpenMarketService().postItem(data: postingItem, completionHandler: postCompletionHandler(result:))
 
         navigationController?.popViewController(animated: true)

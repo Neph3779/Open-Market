@@ -9,45 +9,44 @@ import Foundation
 
 struct RequestBodyEncoder: RequestBodyEncoderProtocol {
     static let boundary: String = "Boundary-\(UUID().uuidString)"
+    /*
+     ----------------------------451158422278730710610368
+     Content-Disposition: form-data; name="images"; filename="logoFace.png"
+     <logoFace.png>
+     ----------------------------451158422278730710610368
+     Content-Disposition: form-data; name="images"; filename="logoOriginal.png"
+     <logoOriginal.png>
+     ----------------------------451158422278730710610368
+     Content-Disposition: form-data; name="params"
+     { "name": "multiple Image test", "descriptions": "세기의 명작", "price": 1000000, "currency": "KRW", "discounted_price": 500000, "stock": 1234567, "secret": "n62jxcvawe1ji3p3" }
+     ----------------------------451158422278730710610368--
+     */
 
-    func encode<T: RequestData>(_ value: T) throws -> Data {
-        if value is JSONData {
-            do {
-                let data = try JSONEncoder().encode(value)
-
-                return data
-            } catch {
-                throw OpenMarketError.JSONEncodingError
-            }
+    func encodePostRequest(postRequest: PostRequest) throws -> Data {
+        var requestData = Data()
+        postRequest.images.forEach { postingImage in
+            let data = convertFileField(key: "images", fileName: postingImage.fileName, data: postingImage.imageData)
+            requestData.append(data)
         }
 
-        var formDataBody = Data()
-
-        guard let formData = value as? FormData else { fatalError() }
-
-        for textField in formData.textFields {
-            formDataBody.append(convertTextField(key: textField.key,
-                                                 value: textField.value))
+        if let data = try? JSONEncoder().encode(postRequest.parameters),
+           let jsonData = String(data: data, encoding: .utf8) {
+            requestData.append(jsonData)
+        } else {
+            throw OpenMarketError.bodyEncodingError
         }
 
-        for fileField in formData.fileFields {
-            formDataBody.append(convertFileField(key: fileField.key,
-                                                 source: "image0.jpg",
-                                                 mimeType: "image/jpeg",
-                                                 value: fileField.value))
-        }
+        requestData.append(RequestBodyEncoder.boundary)
 
-        formDataBody.append("--\(Self.boundary)--")
-        return formDataBody
+        return requestData
     }
 
-    private func convertFileField(key: String, source: String, mimeType: String, value: Data) -> Data {
+    private func convertFileField(key: String, fileName: String, data: Data) -> Data {
         var dataField = Data()
 
         dataField.append("--\(Self.boundary)\r\n")
-        dataField.append("Content-Disposition: form-data; name=\"\(key)\"; filename=\"\(source)\"\r\n")
-        dataField.append("Content-Type: \"\(mimeType)\"\r\n\r\n")
-        dataField.append(value)
+        dataField.append("Content-Disposition: form-data; name=\"\(key)\"; filename=\"\(fileName)\"\r\n")
+        dataField.append(data)
         dataField.append("\r\n")
 
         return dataField

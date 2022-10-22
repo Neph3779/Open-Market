@@ -9,7 +9,6 @@ import Foundation
 
 class OpenMarketService {
     private let sessionManager: SessionManagerProtocol
-    private let identifier = ""
 
     init(sessionManager: SessionManagerProtocol = SessionManager.shared) {
         self.sessionManager = sessionManager
@@ -43,8 +42,8 @@ class OpenMarketService {
         }
     }
 
-    func postItem(data: PostingItem, completionHandler: @escaping (Result<MarketItem, OpenMarketError>) -> Void) {
-        sessionManager.postProduct(identifier: identifier) { result in
+    func postItem(data: PostRequest, completionHandler: @escaping (Result<MarketItem, OpenMarketError>) -> Void) {
+        sessionManager.postProduct(data: data) { result in
             switch result {
             case .failure(let error):
                 completionHandler(.failure(error))
@@ -58,7 +57,7 @@ class OpenMarketService {
     }
 
     func patchItem(id: Int, data: PatchingItem, completionHandler: @escaping (Result<MarketItem, OpenMarketError>) -> Void) {
-        sessionManager.modifyProduct(productId: id, identifier: identifier) { result in
+        sessionManager.modifyProduct(productId: id) { result in
             switch result {
             case .failure(let error):
                 completionHandler(.failure(error))
@@ -72,7 +71,7 @@ class OpenMarketService {
     }
 
     func deleteItem(deleteURI: String, completionHandler: @escaping (Result<MarketItem, OpenMarketError>) -> Void) {
-        sessionManager.deleteProduct(deleteURI: deleteURI, identifier: identifier) { result in
+        sessionManager.deleteProduct(deleteURI: deleteURI) { result in
             switch result {
             case .failure(let error):
                 completionHandler(.failure(error))
