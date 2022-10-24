@@ -18,7 +18,7 @@ enum HTTPMethod: String {
         case .get:
             return nil
         case .post, .patch:
-            return "multipart/form-data; boundary=\(RequestBodyEncoder.boundary)"
+            return "multipart/form-data; boundary=\"\(RequestBodyEncoder.boundary)\""
         case .delete:
             return "application/json"
         }

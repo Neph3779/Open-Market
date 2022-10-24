@@ -8,7 +8,7 @@
 import Foundation
 
 class SessionManager: SessionManagerProtocol {
-    static let shared = SessionManager(requestBodyEncoder: RequestBodyEncoder(), session: URLSession.shared)
+    static let shared = SessionManager(requestBodyEncoder: RequestBodyEncoder(), session: URLSession(configuration: .default))
     private let requestBodyEncoder: RequestBodyEncoderProtocol
     private let session: URLSession
     private let identifier = "262da16e-50e9-11ed-acb7-dfcdeb599683"

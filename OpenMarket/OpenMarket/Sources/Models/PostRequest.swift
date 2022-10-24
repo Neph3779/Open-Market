@@ -8,16 +8,16 @@
 import Foundation
 
 struct PostRequest: RequestData {
-    let parameters: Parameter
+    let parameter: Parameter
     let images: [PostingImage]
 
     struct Parameter: Encodable {
         let name: String
         let descriptions: String
-        let price: Int
+        let price: Double
         let currency: String
         let stock: Int
-        let discountedPrice: Int?
+        let discountedPrice: Double
         let secret: String
 
         enum CodingKeys: String, CodingKey {

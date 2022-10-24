@@ -10,8 +10,9 @@ import PhotosUI
 
 // MARK: - View
 
-class ItemManagingViewController: UIViewController {
-    private var manageMode: ManageMode = .register
+final class ItemManagingViewController: UIViewController {
+    private let itemManagingViewModel = ItemManagingViewModel()
+    private var manageMode: ItemManagingViewModel.ManageMode = .register
 
     private lazy var registerItemButton: UIBarButtonItem = {
         let button = UIBarButtonItem(title: manageMode.buttonTitle, style: .done, target: self, action: #selector(registerItem))
@@ -29,16 +30,16 @@ class ItemManagingViewController: UIViewController {
         let stackView = UIStackView()
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.axis = .vertical
-        stackView.spacing = Style.stackViewMargin
+        stackView.spacing = ItemManagingViewModel.Style.stackViewMargin
         stackView.isLayoutMarginsRelativeArrangement = true
-        stackView.directionalLayoutMargins = NSDirectionalEdgeInsets(top: Style.stackViewMargin,
-                                                                     leading: Style.stackViewMargin,
+        stackView.directionalLayoutMargins = NSDirectionalEdgeInsets(top: ItemManagingViewModel.Style.stackViewMargin,
+                                                                     leading: ItemManagingViewModel.Style.stackViewMargin,
                                                                      bottom: 0,
-                                                                     trailing: Style.stackViewMargin)
+                                                                     trailing: ItemManagingViewModel.Style.stackViewMargin)
         return stackView
     }()
 
-    private let itemImageViews: [UIImageView] = (1...Style.numberOfImages).map { _ in UIImageView() }
+    private let itemImageViews: [UIImageView] = (1...ItemManagingViewModel.Style.numberOfImages).map { _ in UIImageView() }
 
     private let imageSelectStackView: UIStackView = {
         let stackView = UIStackView()
@@ -46,7 +47,7 @@ class ItemManagingViewController: UIViewController {
         stackView.axis = .horizontal
         stackView.alignment = .center
         stackView.distribution = .equalCentering
-        stackView.spacing = Style.imageSpacing
+        stackView.spacing = ItemManagingViewModel.Style.imageSpacing
         return stackView
     }()
 
@@ -61,14 +62,14 @@ class ItemManagingViewController: UIViewController {
 
     private let itemTitleTextField: UITextField = {
         let textField = UITextField()
-        textField.placeholder = Style.itemTitlePlaceholder
+        textField.placeholder = ItemManagingViewModel.Style.itemTitlePlaceholder
         return textField
     }()
 
     private let itemCurrencyLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = Locale.current.currencyCode ?? Style.defaultCurrencyCode
+        label.text = Locale.current.currencyCode ?? ItemManagingViewModel.Style.defaultCurrencyCode
         label.setContentHuggingPriority(.required, for: .horizontal)
         label.setContentCompressionResistancePriority(.required, for: .horizontal)
         return label
@@ -78,7 +79,7 @@ class ItemManagingViewController: UIViewController {
         let textField = UITextField()
         textField.translatesAutoresizingMaskIntoConstraints = false
         textField.keyboardType = .numberPad
-        textField.placeholder = Style.itemPricePlaceholder
+        textField.placeholder = ItemManagingViewModel.Style.itemPricePlaceholder
         return textField
     }()
 
@@ -86,7 +87,7 @@ class ItemManagingViewController: UIViewController {
         let textField = UITextField()
         textField.translatesAutoresizingMaskIntoConstraints = false
         textField.keyboardType = .numberPad
-        textField.placeholder = Style.itemDiscountedPricePlaceholder
+        textField.placeholder = ItemManagingViewModel.Style.itemDiscountedPricePlaceholder
         return textField
     }()
 
@@ -101,7 +102,7 @@ class ItemManagingViewController: UIViewController {
         textField.translatesAutoresizingMaskIntoConstraints = false
         textField.delegate = self
         textField.keyboardType = .numberPad
-        textField.placeholder = Style.itemStockPlaceholder
+        textField.placeholder = ItemManagingViewModel.Style.itemStockPlaceholder
         return textField
     }()
 
@@ -111,7 +112,7 @@ class ItemManagingViewController: UIViewController {
         textView.delegate = self
         textView.isScrollEnabled = false
         textView.font = UIFont.preferredFont(forTextStyle: .body)
-        textView.text = Style.itemDescriptionPlaceholder
+        textView.text = ItemManagingViewModel.Style.itemDescriptionPlaceholder
         textView.textColor = .lightGray
         return textView
     }()
@@ -120,11 +121,11 @@ class ItemManagingViewController: UIViewController {
         let textField = UITextField()
         textField.isSecureTextEntry = true
         textField.textContentType = .password
-        textField.placeholder = Style.passwordPlaceholder
+        textField.placeholder = ItemManagingViewModel.Style.passwordPlaceholder
         return textField
     }()
 
-    init(mode: ManageMode) {
+    init(mode: ItemManagingViewModel.ManageMode) {
         manageMode = mode
         super.init(nibName: nil, bundle: nil)
     }
@@ -182,8 +183,8 @@ class ItemManagingViewController: UIViewController {
 
         NSLayoutConstraint.activate([
             imageAddButton.widthAnchor.constraint(equalTo: imageSelectStackView.widthAnchor,
-                                                  multiplier: Style.imageSize.multiplier,
-                                                  constant: Style.imageSize.constant),
+                                                  multiplier: ItemManagingViewModel.Style.imageSize.multiplier,
+                                                  constant: ItemManagingViewModel.Style.imageSize.constant),
             imageAddButton.heightAnchor.constraint(equalTo: imageAddButton.widthAnchor)
         ])
 
@@ -205,10 +206,11 @@ class ItemManagingViewController: UIViewController {
         priceView.addSubview(itemPriceTextField)
         priceView.addSubview(itemDiscountedPriceTextField)
         NSLayoutConstraint.activate([
-            priceView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: Style.priceViewHeightProportion),
+            priceView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: ItemManagingViewModel.Style.priceViewHeightProportion),
             itemCurrencyLabel.leadingAnchor.constraint(equalTo: priceView.leadingAnchor),
             itemCurrencyLabel.centerYAnchor.constraint(equalTo: priceView.centerYAnchor),
-            itemPriceTextField.leadingAnchor.constraint(equalTo: itemCurrencyLabel.trailingAnchor, constant: Style.currencyTrailingMargin),
+            itemPriceTextField.leadingAnchor.constraint(equalTo: itemCurrencyLabel.trailingAnchor,
+                                                        constant: ItemManagingViewModel.Style.currencyTrailingMargin),
             itemPriceTextField.topAnchor.constraint(equalTo: priceView.topAnchor),
             itemPriceTextField.heightAnchor.constraint(equalTo: priceView.heightAnchor, multiplier: 1/2),
             itemPriceTextField.trailingAnchor.constraint(equalTo: priceView.trailingAnchor),
@@ -220,7 +222,7 @@ class ItemManagingViewController: UIViewController {
     }
 
     private func setItemDescriptionTextView() {
-        itemDescriptionTextView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: Style.descriptionViewProportion).isActive = true
+        itemDescriptionTextView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: ItemManagingViewModel.Style.descriptionViewProportion).isActive = true
     }
 
     private func setDivisionLine() {
@@ -236,40 +238,41 @@ extension ItemManagingViewController: PHPickerViewControllerDelegate {
     func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
         let items = results.map(\.itemProvider)
         let lastItemIndex = items.count - 1
-        var pickedImages: [UIImage] = []
 
         if items.isEmpty {
             dismiss(animated: true, completion: nil)
             return
         }
-
+        // FIXME: Dispatch group으로 리팩토링 예정
         for index in 0...lastItemIndex {
-            items[index].loadObject(ofClass: UIImage.self) { (image, _) in
-                if let itemImage = image as? UIImage,
-                   let dataSize = itemImage.jpegData(compressionQuality: 1)?.count,
-                   dataSize / 1000 < 300 {
-                    pickedImages.append(itemImage)
+            items[index].loadObject(ofClass: UIImage.self) { [weak self] (image, _) in
+                guard let self = self else { return }
+                if let name = items[index].suggestedName,
+                   let image = image as? UIImage,
+                   let data = image.pngData(),
+                   data.count / 1000 < 300 {
+                    self.itemManagingViewModel.pickedImages.append(.init(name: name, image: image, data: data))
                 }
 
                 if index == lastItemIndex {
-                    let didErrorOccurred = items.count != pickedImages.count
-                    self.pickerLastCompletion(pickedImages: pickedImages, didErrorOccurred: didErrorOccurred)
+                    let didErrorOccurred = items.count != self.itemManagingViewModel.pickedImages.count
+                    self.pickerCompletion(didErrorOccurred: didErrorOccurred)
                 }
             }
         }
     }
 
-    func pickerLastCompletion(pickedImages: [UIImage], didErrorOccurred: Bool) {
+    private func pickerCompletion(didErrorOccurred: Bool) {
         DispatchQueue.main.async {
-            for index in 0..<pickedImages.count {
-                self.itemImageViews[index].image = pickedImages[index]
+            for index in 0..<self.itemManagingViewModel.pickedImages.count {
+                self.itemImageViews[index].image = self.itemManagingViewModel.pickedImages[index].image
             }
 
             didErrorOccurred ? self.dismiss(animated: true, completion: self.presentOverSizeError) : self.dismiss(animated: true, completion: nil)
         }
     }
 
-    func presentOverSizeError() {
+    private func presentOverSizeError() {
         let alert = UIAlertController(title: "선택한 이미지 중 업로드 할 수 없는 이미지가 포함되어있어요",
                                       message: "이미지의 크기는 300Kb 이하여야 합니다🥲",
                                       preferredStyle: .alert)
@@ -288,41 +291,35 @@ extension ItemManagingViewController {
               let descriptions = itemDescriptionTextView.text,
               let priceText = itemPriceTextField.text,
               let price = Int(priceText),
+              let discountedPriceText = itemDiscountedPriceTextField.text,
+              let discountedPrice = Int(discountedPriceText),
               let currency = itemCurrencyLabel.text,
               let stockText = itemStockTextField.text,
               let stock = Int(stockText),
               let password = passwordTextField.text else {
             return
         }
-
-        let itemImageData = getItemImageData()
-
         let postingItem = PostRequest(
-            parameters: PostRequest.Parameter(name: title, descriptions: descriptions, price: price,
-                                              currency: currency, stock: stock, discountedPrice: nil, secret: password),
-            images: [
-                PostRequest.PostingImage(fileName: "", imageData: Data()) // FIXME: 이미지 로직 필요
-            ])
+            parameter: PostRequest.Parameter(name: title, descriptions: descriptions, price: Double(price),
+                                              currency: currency, stock: stock,
+                                              discountedPrice: Double(discountedPrice), secret: password),
+            images: postImages())
         OpenMarketService().postItem(data: postingItem, completionHandler: postCompletionHandler(result:))
 
         navigationController?.popViewController(animated: true)
     }
 
-    func getItemImageData() -> [Data] {
-        var itemImageData: [Data] = []
+    private func postImages() -> [PostRequest.PostingImage] {
+        var postingImages = [PostRequest.PostingImage]()
 
-        for imageView in itemImageViews {
-            guard let itemImage = imageView.image,
-                  let imageData = itemImage.jpegData(compressionQuality: 0) else { continue }
-            let imageKBSize = Double(imageData.count) / 1000.0
-            if imageKBSize > 300 { continue }
-            itemImageData.append(imageData)
+        for item in itemManagingViewModel.pickedImages {
+            postingImages.append(.init(fileName: item.name, imageData: item.data))
         }
 
-        return itemImageData
+        return postingImages
     }
 
-    func postCompletionHandler(result: Result<MarketItem, OpenMarketError>) {
+    private func postCompletionHandler(result: Result<MarketItem, OpenMarketError>) {
         switch result {
         case .success(let item):
             print(item.id)
@@ -368,48 +365,6 @@ extension ItemManagingViewController: UITextViewDelegate {
         if textView.text.isEmpty {
             textView.text = "상품의 상세한 내용을 작성해주세요."
             textView.textColor = .lightGray
-        }
-    }
-}
-
-// MARK: - Enums
-extension ItemManagingViewController {
-    private enum Style {
-        static let currencyTrailingMargin: CGFloat = 20
-        static let defaultCurrencyCode: String = "KRW"
-        static let descriptionViewProportion: CGFloat = 0.5
-        static let imageSize: (multiplier: CGFloat, constant: CGFloat) = (1/6, -10)
-        static let imageSpacing: CGFloat = 10
-        static let itemDescriptionPlaceholder: String = "상품의 상세한 내용을 작성해주세요."
-        static let itemDiscountedPricePlaceholder: String = "할인가격 (Optional)"
-        static let itemPricePlaceholder: String = "가격"
-        static let itemStockPlaceholder: String = "재고수량"
-        static let itemTitlePlaceholder: String = "상품명"
-        static let numberOfImages: Int = 5
-        static let passwordPlaceholder: String = "비밀번호"
-        static let priceViewHeightProportion: CGFloat = 0.1
-        static let stackViewMargin: CGFloat = 15
-    }
-
-    enum ManageMode {
-        case register
-        case modify
-
-        var navigationbarTitle: String {
-            switch self {
-            case .register:
-                return "상품등록"
-            case .modify:
-                return "상품수정"
-            }
-        }
-        var buttonTitle: String {
-            switch self {
-            case .register:
-                return "등록"
-            case .modify:
-                return "수정"
-            }
         }
     }
 }

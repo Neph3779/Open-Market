@@ -37,6 +37,7 @@
 		1CFB2EE9265A4E510071ECCB /* ItemManagingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CFB2EE8265A4E510071ECCB /* ItemManagingViewController.swift */; };
 		320B02B829029907005E74CA /* RequestURLPath.swift in Sources */ = {isa = PBXBuildFile; fileRef = 320B02B729029907005E74CA /* RequestURLPath.swift */; };
 		320B02BA2902991E005E74CA /* HTTPMethod.swift in Sources */ = {isa = PBXBuildFile; fileRef = 320B02B92902991E005E74CA /* HTTPMethod.swift */; };
+		3265CC6B2903CD9600A3E047 /* ItemManagingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3265CC6A2903CD9600A3E047 /* ItemManagingViewModel.swift */; };
 		32CDB2302901818400AA480B /* OpenMarketService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32CDB22F2901818400AA480B /* OpenMarketService.swift */; };
 		C70FB0FB25BEF61C00C9924E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C70FB0FA25BEF61C00C9924E /* AppDelegate.swift */; };
 		C70FB0FF25BEF61C00C9924E /* MarketItemsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C70FB0FE25BEF61C00C9924E /* MarketItemsViewController.swift */; };
@@ -87,6 +88,7 @@
 		1CFB2EE8265A4E510071ECCB /* ItemManagingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemManagingViewController.swift; sourceTree = "<group>"; };
 		320B02B729029907005E74CA /* RequestURLPath.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestURLPath.swift; sourceTree = "<group>"; };
 		320B02B92902991E005E74CA /* HTTPMethod.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPMethod.swift; sourceTree = "<group>"; };
+		3265CC6A2903CD9600A3E047 /* ItemManagingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemManagingViewModel.swift; sourceTree = "<group>"; };
 		32CDB22F2901818400AA480B /* OpenMarketService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OpenMarketService.swift; sourceTree = "<group>"; };
 		C70FB0F725BEF61C00C9924E /* OpenMarket.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OpenMarket.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C70FB0FA25BEF61C00C9924E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -169,6 +171,7 @@
 				024D5D3F264B9F6800980107 /* Models */,
 				0260978B264BCF400086A8C5 /* Protocols */,
 				024D5D40264B9F7400980107 /* ViewControllers */,
+				3265CC6C2903D3DE00A3E047 /* ViewModels */,
 				02A7EE6026576F6200562DF8 /* Views */,
 			);
 			path = Sources;
@@ -264,6 +267,14 @@
 				1C97C8C72654D11200351FB2 /* MockURLProtocol.swift */,
 			);
 			path = Mocks;
+			sourceTree = "<group>";
+		};
+		3265CC6C2903D3DE00A3E047 /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				3265CC6A2903CD9600A3E047 /* ItemManagingViewModel.swift */,
+			);
+			path = ViewModels;
 			sourceTree = "<group>";
 		};
 		C70FB0EE25BEF61C00C9924E = {
@@ -448,6 +459,7 @@
 				32CDB2302901818400AA480B /* OpenMarketService.swift in Sources */,
 				C70FB0FB25BEF61C00C9924E /* AppDelegate.swift in Sources */,
 				02A7EE642657799600562DF8 /* ItemCellLabel.swift in Sources */,
+				3265CC6B2903CD9600A3E047 /* ItemManagingViewModel.swift in Sources */,
 				02899E7D2653563700DB4A0B /* RequestBodyEncoder.swift in Sources */,
 				1CFB2EE9265A4E510071ECCB /* ItemManagingViewController.swift in Sources */,
 				02899E76265355BC00DB4A0B /* DeletingItem.swift in Sources */,
@@ -648,7 +660,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = "OpenMarket/Supporting File/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 14.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -668,7 +680,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = "OpenMarket/Supporting File/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 14.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
