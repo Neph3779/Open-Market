@@ -39,7 +39,7 @@ struct RequestBodyEncoder: RequestBodyEncoderProtocol {
         let divisionBoundary = "--\(Self.boundary)\(crlf)"
         dataField.append(divisionBoundary)
         dataField.append("Content-Disposition: form-data; name=\"\(key)\"; filename=\"\(fileName).png\"\(crlf)")
-        dataField.append("Content-Type: image/png\r\n\r\n")
+        dataField.append("Content-Type: image/png\(crlf)\(crlf)")
         dataField.append(data)
         dataField.append("\(crlf)")
         return dataField
@@ -48,7 +48,7 @@ struct RequestBodyEncoder: RequestBodyEncoderProtocol {
     private func convertTextField(key: String, value: String) -> Data {
         var textField = Data()
         let divisionBoundary = "--\(Self.boundary)\(crlf)"
-        textField.append("--\(Self.boundary)\(crlf)")
+        textField.append(divisionBoundary)
         textField.append("Content-Disposition: form-data; name=\"\(key)\"\(crlf)\(crlf)")
         textField.append("\(value)\(crlf)")
         textField.append("\(crlf)")
