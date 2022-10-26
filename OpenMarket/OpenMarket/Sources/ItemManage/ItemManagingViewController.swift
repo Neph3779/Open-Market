@@ -12,10 +12,10 @@ import PhotosUI
 
 final class ItemManagingViewController: UIViewController {
     private let itemManagingViewModel = ItemManagingViewModel()
-    private var manageMode: ItemManagingViewModel.ManageMode = .register
 
     private lazy var registerItemButton: UIBarButtonItem = {
-        let button = UIBarButtonItem(title: manageMode.buttonTitle, style: .done, target: self, action: #selector(registerItem))
+        let button = UIBarButtonItem(title: itemManagingViewModel.manageMode.buttonTitle,
+                                     style: .done, target: self, action: #selector(registerItem))
         return button
     }()
 
@@ -69,7 +69,7 @@ final class ItemManagingViewController: UIViewController {
     private let itemCurrencyLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = Locale.current.currencyCode ?? ItemManagingViewModel.Style.defaultCurrencyCode
+        label.text = Locale.current.currency?.identifier ?? ItemManagingViewModel.Style.defaultCurrencyCode
         label.setContentHuggingPriority(.required, for: .horizontal)
         label.setContentCompressionResistancePriority(.required, for: .horizontal)
         return label
@@ -126,8 +126,8 @@ final class ItemManagingViewController: UIViewController {
     }()
 
     init(mode: ItemManagingViewModel.ManageMode) {
-        manageMode = mode
         super.init(nibName: nil, bundle: nil)
+        itemManagingViewModel.manageMode = mode
     }
 
     required init?(coder: NSCoder) {
@@ -148,7 +148,7 @@ final class ItemManagingViewController: UIViewController {
 
     private func setItemManagingView() {
         view.backgroundColor = .systemBackground
-        navigationItem.title = manageMode.navigationbarTitle
+        navigationItem.title = itemManagingViewModel.manageMode.navigationbarTitle
         navigationItem.rightBarButtonItem = registerItemButton
     }
 
@@ -222,7 +222,9 @@ final class ItemManagingViewController: UIViewController {
     }
 
     private func setItemDescriptionTextView() {
-        itemDescriptionTextView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: ItemManagingViewModel.Style.descriptionViewProportion).isActive = true
+        itemDescriptionTextView.heightAnchor
+            .constraint(equalTo: view.heightAnchor,
+                        multiplier: ItemManagingViewModel.Style.descriptionViewProportion).isActive = true
     }
 
     private func setDivisionLine() {
@@ -288,7 +290,7 @@ extension ItemManagingViewController: PHPickerViewControllerDelegate {
 extension ItemManagingViewController {
     @objc func registerItem() {
         guard let title = itemTitleTextField.text,
-              let descriptions = itemDescriptionTextView.text,
+              let description = itemDescriptionTextView.text,
               let priceText = itemPriceTextField.text,
               let price = Int(priceText),
               let discountedPriceText = itemDiscountedPriceTextField.text,
@@ -300,7 +302,7 @@ extension ItemManagingViewController {
             return
         }
         let postingItem = PostRequest(
-            parameter: PostRequest.Parameter(name: title, descriptions: descriptions, price: Double(price),
+            parameter: PostRequest.Parameter(name: title, description: description, price: Double(price),
                                               currency: currency, stock: stock,
                                               discountedPrice: Double(discountedPrice), secret: password),
             images: postImages())

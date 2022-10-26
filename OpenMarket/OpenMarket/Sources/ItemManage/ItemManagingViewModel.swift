@@ -14,6 +14,7 @@ final class ItemManagingViewModel {
         let data: Data
     }
     var pickedImages = [PickedImage]()
+    var manageMode: ManageMode = .register
 }
 
 // MARK: Enums

@@ -13,7 +13,7 @@ struct PostRequest: RequestData {
 
     struct Parameter: Encodable {
         let name: String
-        let descriptions: String
+        let description: String
         let price: Double
         let currency: String
         let stock: Int
@@ -22,7 +22,7 @@ struct PostRequest: RequestData {
 
         enum CodingKeys: String, CodingKey {
             case name
-            case descriptions
+            case description
             case price
             case currency
             case stock
