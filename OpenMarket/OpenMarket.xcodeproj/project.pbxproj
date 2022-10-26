@@ -164,8 +164,8 @@
 		024D5D42264B9FA800980107 /* Sources */ = {
 			isa = PBXGroup;
 			children = (
-				02899E7E2653564F00DB4A0B /* OpenMarketError.swift */,
-				1C3FE507264D399D0051D507 /* Controllers */,
+				32D6B10C2909110300087D13 /* Error */,
+				1C3FE507264D399D0051D507 /* Network */,
 				024D5D41264B9F9100980107 /* Entry */,
 				1C3FE4FC264D0B2B0051D507 /* Extensions */,
 				024D5D3F264B9F6800980107 /* Models */,
@@ -237,7 +237,7 @@
 			path = Extensions;
 			sourceTree = "<group>";
 		};
-		1C3FE507264D399D0051D507 /* Controllers */ = {
+		1C3FE507264D399D0051D507 /* Network */ = {
 			isa = PBXGroup;
 			children = (
 				32CDB22F2901818400AA480B /* OpenMarketService.swift */,
@@ -246,7 +246,7 @@
 				320B02B92902991E005E74CA /* HTTPMethod.swift */,
 				320B02B729029907005E74CA /* RequestURLPath.swift */,
 			);
-			path = Controllers;
+			path = Network;
 			sourceTree = "<group>";
 		};
 		1C7D1D76264BA59700ADE23A /* APIModel */ = {
@@ -275,6 +275,14 @@
 				3265CC6A2903CD9600A3E047 /* ItemManagingViewModel.swift */,
 			);
 			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		32D6B10C2909110300087D13 /* Error */ = {
+			isa = PBXGroup;
+			children = (
+				02899E7E2653564F00DB4A0B /* OpenMarketError.swift */,
+			);
+			path = Error;
 			sourceTree = "<group>";
 		};
 		C70FB0EE25BEF61C00C9924E = {

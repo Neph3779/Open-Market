@@ -14,7 +14,6 @@ enum RequestURLPath {
         urlComponents.host = "openmarket.yagom-academy.kr"
         return urlComponents
     }()
-
     static func healthCheck() throws -> URL {
         var urlComponents = urlComponents
         urlComponents.path = "/healthChecker"
