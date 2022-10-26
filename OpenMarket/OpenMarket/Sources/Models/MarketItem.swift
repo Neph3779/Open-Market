@@ -7,14 +7,14 @@
 
 import Foundation
 
-struct MarketItem: Decodable {
+struct MarketItem: Codable {
     let id: Int
     let vendorId: Int
     let vendorName: String
     let name: String
     let description: String
     let thumbnail: String
-    let currency: String // Enum?
+    let currency: String
     let price: Double
     let bargainPrice: Double
     let discountedPrice: Double
