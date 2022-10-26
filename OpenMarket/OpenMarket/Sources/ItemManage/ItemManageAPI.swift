@@ -19,7 +19,8 @@ final class ItemManageAPI {
             switch result {
             case .success(let data):
                 guard let decodedData = try? JSONDecoder().decode(MarketItem.self, from: data) else {
-                    return completionHandler(.failure(.invalidData))
+                    completionHandler(.failure(.invalidData))
+                    return
                 }
                 completionHandler(.success(decodedData))
             case .failure(let error):
