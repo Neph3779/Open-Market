@@ -13,6 +13,7 @@ final class ItemManagingViewModel {
         let image: UIImage
         let data: Data
     }
+    let itemManageAPI = ItemManageAPI()
     var pickedImages = [PickedImage]()
     var manageMode: ManageMode = .register
 }

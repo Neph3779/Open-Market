@@ -7,16 +7,13 @@
 import UIKit
 
 class MarketItemsViewController: UIViewController {
-    private let openMarketService = OpenMarketService()
-    private var marketItems: [MarketItem] = []
-    private var lastPageId: Int = 0
-    private var hasNext: Bool = false
+    private let viewModel = MarketItemsViewModel()
     private let loadingIndicator = UIActivityIndicatorView(style: .large)
-    private var layoutMode: LayoutMode = .list
 
     private lazy var layoutSegmentedControl: UISegmentedControl = {
-        let segmentedControl = UISegmentedControl(items: [LayoutMode.list.name, LayoutMode.grid.name])
-        segmentedControl.selectedSegmentIndex = LayoutMode.list.rawValue
+        let segmentedControl = UISegmentedControl(items: [MarketItemsViewModel.LayoutMode.list.name,
+                                                          MarketItemsViewModel.LayoutMode.grid.name])
+        segmentedControl.selectedSegmentIndex = MarketItemsViewModel.LayoutMode.list.rawValue
         segmentedControl.layer.borderWidth = Style.segmentControlBorderWidth
         segmentedControl.layer.borderColor = UIColor.systemBlue.cgColor
         segmentedControl.selectedSegmentTintColor = .systemBlue
@@ -81,7 +78,8 @@ class MarketItemsViewController: UIViewController {
     }
 
     private func fetchPageData() {
-        openMarketService.getPage(id: lastPageId + 1, completionHandler: fetchPageDataCompletionHandler)
+        viewModel.marketItemsAPI.getPage(id: viewModel.lastPageId + 1,
+                                         completionHandler: fetchPageDataCompletionHandler)
     }
 
     private func fetchPageDataCompletionHandler(_ result: Result<MarketPage, OpenMarketError>) {
@@ -89,10 +87,10 @@ class MarketItemsViewController: UIViewController {
         case .success(let page):
             if page.pages.isEmpty { return }
 
-            let rangeToInsert: Range<Int> = marketItems.count ..< marketItems.count + page.pages.count
-            self.marketItems.append(contentsOf: page.pages)
-            lastPageId = page.pageNo
-            hasNext = page.hasNext
+            let rangeToInsert = viewModel.marketItems.count ..< viewModel.marketItems.count + page.pages.count
+            viewModel.marketItems.append(contentsOf: page.pages)
+            viewModel.lastPageId = page.pageNo
+            viewModel.hasNextPage = page.hasNext
 
             DispatchQueue.main.async {
                 self.collectionView.insertItems(at: rangeToInsert.map { IndexPath(item: $0, section: 0) })
@@ -111,7 +109,7 @@ class MarketItemsViewController: UIViewController {
         let rowWidthWithoutInset: CGFloat = collectionView.safeAreaLayoutGuide.layoutFrame.width - inset * CGFloat(numberOfcolumns + 1)
         let gridCellWidth: CGFloat = rowWidthWithoutInset / CGFloat(numberOfcolumns)
 
-        switch layoutMode {
+        switch viewModel.layoutMode {
         case .list:
             return listCellWidth
         case .grid:
@@ -120,8 +118,8 @@ class MarketItemsViewController: UIViewController {
     }
 
     @objc private func changeLayoutMode() {
-        let mode = LayoutMode(rawValue: layoutSegmentedControl.selectedSegmentIndex)!
-        layoutMode.changeMode(into: mode)
+        let mode = MarketItemsViewModel.LayoutMode(rawValue: layoutSegmentedControl.selectedSegmentIndex)!
+        viewModel.layoutMode.changeMode(into: mode)
         collectionView.reloadData()
     }
 
@@ -134,11 +132,11 @@ class MarketItemsViewController: UIViewController {
 
 extension MarketItemsViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return marketItems.count
+        return viewModel.marketItems.count
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        switch layoutMode {
+        switch viewModel.layoutMode {
         case .list:
             return collectionView.dequeueReusableCell(withReuseIdentifier: ItemListCell.reuseIdentifier, for: indexPath)
         case .grid:
@@ -147,17 +145,18 @@ extension MarketItemsViewController: UICollectionViewDataSource {
     }
 
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        if indexPath.item == marketItems.count - Style.numberOfCellsToTriggerFetch && hasNext {
+        if indexPath.item == viewModel.marketItems.count - Style.numberOfCellsToTriggerFetch
+            && viewModel.hasNextPage {
             fetchPageData()
         }
 
-        switch layoutMode {
+        switch viewModel.layoutMode {
         case .list:
             guard let itemCell = cell as? ItemListCell else { return }
-            itemCell.item = marketItems[indexPath.row]
+            itemCell.item = viewModel.marketItems[indexPath.row]
         case .grid:
             guard let itemCell = cell as? ItemGridCell else { return }
-            itemCell.item = marketItems[indexPath.item]
+            itemCell.item = viewModel.marketItems[indexPath.item]
         }
     }
 }
@@ -169,14 +168,14 @@ extension MarketItemsViewController: UICollectionViewDelegateFlowLayout {
         let gridCellWidth: CGFloat = getCellWidth(numberOfcolumns: 2, inset: 10)
         let gridCellHeight: CGFloat = gridCellWidth * Style.goldenRatio
 
-        return layoutMode == .list ? CGSize(width: listCellWidth, height: listCellHeight) :
+        return viewModel.layoutMode == .list ? CGSize(width: listCellWidth, height: listCellHeight) :
             CGSize(width: gridCellWidth, height: gridCellHeight)
     }
 
     func collectionView(_ collectionView: UICollectionView,
                         layout collectionViewLayout: UICollectionViewLayout,
                         insetForSectionAt section: Int) -> UIEdgeInsets {
-        switch layoutMode {
+        switch viewModel.layoutMode {
         case .grid:
             return UIEdgeInsets(top: 0, left: Style.gridHorizontalInset, bottom: 0, right: Style.gridHorizontalInset)
         default:
@@ -193,23 +192,5 @@ extension MarketItemsViewController {
         static let numberOfCellsToTriggerFetch = 3
         static let numberOfGridColumns: Int = 2
         static let segmentControlBorderWidth: CGFloat = 2
-    }
-
-    private enum LayoutMode: Int {
-        case list = 0
-        case grid = 1
-
-        var name: String {
-            switch self {
-            case .list:
-                return "LIST"
-            case .grid:
-                return "GRID"
-            }
-        }
-
-        mutating func changeMode(into layoutMode: LayoutMode) {
-            self = layoutMode
-        }
     }
 }

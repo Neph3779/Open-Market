@@ -8,7 +8,8 @@
 import Foundation
 
 class SessionManager: SessionManagerProtocol {
-    static let shared = SessionManager(requestBodyEncoder: RequestBodyEncoder(), session: URLSession(configuration: .default))
+    static let shared = SessionManager(requestBodyEncoder: RequestBodyEncoder(),
+                                       session: URLSession(configuration: .default))
     private let requestBodyEncoder: RequestBodyEncoderProtocol
     private let session: URLSession
     private let identifier = "262da16e-50e9-11ed-acb7-dfcdeb599683"
@@ -34,7 +35,6 @@ class SessionManager: SessionManagerProtocol {
         do {
             let url = try RequestURLPath.getProductList(pageNumber: pageNumber, itemsPerPage: itemsPerPage)
             let request = try headerConfiguredRequest(method: .get, url: url)
-
             dataTask(request: request, completionHandler: completionHandler).resume()
         } catch {
 
@@ -46,7 +46,6 @@ class SessionManager: SessionManagerProtocol {
         do {
             let url = try RequestURLPath.getProductDetail(productId: productId)
             let request = try headerConfiguredRequest(method: .get, url: url)
-
             dataTask(request: request, completionHandler: completionHandler).resume()
         } catch {
 
@@ -60,7 +59,6 @@ class SessionManager: SessionManagerProtocol {
             var request = try headerConfiguredRequest(method: .post, url: url)
             request.setValue(identifier, forHTTPHeaderField: "identifier")
             request = try requestWithBody(request: request, method: .post, data: data)
-
             dataTask(request: request, completionHandler: completionHandler).resume()
         } catch {
 

@@ -17,13 +17,13 @@ class OpenMarketService {
     func getPage(id: Int, itemsPerPage: Int = 100, completionHandler: @escaping (Result<MarketPage, OpenMarketError>) -> Void) {
         sessionManager.getProductList(pageNumber: id, itemsPerPage: itemsPerPage) { result in
             switch result {
-            case .failure(let error):
-                completionHandler(.failure(error))
             case .success(let data):
                 guard let decodedData = try? JSONDecoder().decode(MarketPage.self, from: data) else {
                     return completionHandler(.failure(.invalidData))
                 }
                 completionHandler(.success(decodedData))
+            case .failure(let error):
+                completionHandler(.failure(error))
             }
         }
     }
@@ -31,13 +31,13 @@ class OpenMarketService {
     func getItem(id: Int, completionHandler: @escaping (Result<MarketItem, OpenMarketError>) -> Void) {
         sessionManager.getProductDetail(productId: id) { result in
             switch result {
-            case .failure(let error):
-                completionHandler(.failure(error))
             case .success(let data):
                 guard let decodedData = try? JSONDecoder().decode(MarketItem.self, from: data) else {
                     return completionHandler(.failure(.invalidData))
                 }
                 completionHandler(.success(decodedData))
+            case .failure(let error):
+                completionHandler(.failure(error))
             }
         }
     }
@@ -45,13 +45,13 @@ class OpenMarketService {
     func postItem(data: PostRequest, completionHandler: @escaping (Result<MarketItem, OpenMarketError>) -> Void) {
         sessionManager.postProduct(data: data) { result in
             switch result {
-            case .failure(let error):
-                completionHandler(.failure(error))
             case .success(let data):
                 guard let decodedData = try? JSONDecoder().decode(MarketItem.self, from: data) else {
                     return completionHandler(.failure(.invalidData))
                 }
                 completionHandler(.success(decodedData))
+            case .failure(let error):
+                completionHandler(.failure(error))
             }
         }
     }
@@ -59,13 +59,13 @@ class OpenMarketService {
     func patchItem(id: Int, data: PatchingItem, completionHandler: @escaping (Result<MarketItem, OpenMarketError>) -> Void) {
         sessionManager.modifyProduct(productId: id) { result in
             switch result {
-            case .failure(let error):
-                completionHandler(.failure(error))
             case .success(let data):
                 guard let decodedData = try? JSONDecoder().decode(MarketItem.self, from: data) else {
                     return completionHandler(.failure(.invalidData))
                 }
                 completionHandler(.success(decodedData))
+            case .failure(let error):
+                completionHandler(.failure(error))
             }
         }
     }
@@ -73,13 +73,13 @@ class OpenMarketService {
     func deleteItem(deleteURI: String, completionHandler: @escaping (Result<MarketItem, OpenMarketError>) -> Void) {
         sessionManager.deleteProduct(deleteURI: deleteURI) { result in
             switch result {
-            case .failure(let error):
-                completionHandler(.failure(error))
             case .success(let data):
                 guard let decodedData = try? JSONDecoder().decode(MarketItem.self, from: data) else {
                     return completionHandler(.failure(.invalidData))
                 }
                 completionHandler(.success(decodedData))
+            case .failure(let error):
+                completionHandler(.failure(error))
             }
         }
     }

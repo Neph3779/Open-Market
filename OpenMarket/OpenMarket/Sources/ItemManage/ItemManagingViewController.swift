@@ -11,10 +11,10 @@ import PhotosUI
 // MARK: - View
 
 final class ItemManagingViewController: UIViewController {
-    private let itemManagingViewModel = ItemManagingViewModel()
+    private let viewModel = ItemManagingViewModel()
 
     private lazy var registerItemButton: UIBarButtonItem = {
-        let button = UIBarButtonItem(title: itemManagingViewModel.manageMode.buttonTitle,
+        let button = UIBarButtonItem(title: viewModel.manageMode.buttonTitle,
                                      style: .done, target: self, action: #selector(registerItem))
         return button
     }()
@@ -127,7 +127,7 @@ final class ItemManagingViewController: UIViewController {
 
     init(mode: ItemManagingViewModel.ManageMode) {
         super.init(nibName: nil, bundle: nil)
-        itemManagingViewModel.manageMode = mode
+        viewModel.manageMode = mode
     }
 
     required init?(coder: NSCoder) {
@@ -148,7 +148,7 @@ final class ItemManagingViewController: UIViewController {
 
     private func setItemManagingView() {
         view.backgroundColor = .systemBackground
-        navigationItem.title = itemManagingViewModel.manageMode.navigationbarTitle
+        navigationItem.title = viewModel.manageMode.navigationbarTitle
         navigationItem.rightBarButtonItem = registerItemButton
     }
 
@@ -253,11 +253,11 @@ extension ItemManagingViewController: PHPickerViewControllerDelegate {
                    let image = image as? UIImage,
                    let data = image.pngData(),
                    data.count / 1000 < 300 {
-                    self.itemManagingViewModel.pickedImages.append(.init(name: name, image: image, data: data))
+                    self.viewModel.pickedImages.append(.init(name: name, image: image, data: data))
                 }
 
                 if index == lastItemIndex {
-                    let didErrorOccurred = items.count != self.itemManagingViewModel.pickedImages.count
+                    let didErrorOccurred = items.count != self.viewModel.pickedImages.count
                     self.pickerCompletion(didErrorOccurred: didErrorOccurred)
                 }
             }
@@ -266,8 +266,8 @@ extension ItemManagingViewController: PHPickerViewControllerDelegate {
 
     private func pickerCompletion(didErrorOccurred: Bool) {
         DispatchQueue.main.async {
-            for index in 0..<self.itemManagingViewModel.pickedImages.count {
-                self.itemImageViews[index].image = self.itemManagingViewModel.pickedImages[index].image
+            for index in 0..<self.viewModel.pickedImages.count {
+                self.itemImageViews[index].image = self.viewModel.pickedImages[index].image
             }
 
             didErrorOccurred ? self.dismiss(animated: true, completion: self.presentOverSizeError) : self.dismiss(animated: true, completion: nil)
@@ -306,7 +306,7 @@ extension ItemManagingViewController {
                                               currency: currency, stock: stock,
                                               discountedPrice: Double(discountedPrice), secret: password),
             images: postImages())
-        OpenMarketService().postItem(data: postingItem, completionHandler: postCompletionHandler(result:))
+        viewModel.itemManageAPI.postItem(data: postingItem, completionHandler: postCompletionHandler(result:))
 
         navigationController?.popViewController(animated: true)
     }
@@ -314,7 +314,7 @@ extension ItemManagingViewController {
     private func postImages() -> [PostRequest.PostingImage] {
         var postingImages = [PostRequest.PostingImage]()
 
-        for item in itemManagingViewModel.pickedImages {
+        for item in viewModel.pickedImages {
             postingImages.append(.init(fileName: item.name, imageData: item.data))
         }
 
