@@ -163,7 +163,9 @@ extension MarketItemsViewController: UICollectionViewDataSource {
 
 extension MarketItemsViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        navigationController?.pushViewController(ProductDetailViewController(), animated: true)
+        navigationController?.pushViewController(
+            ProductDetailViewController(productId: viewModel.marketItems[indexPath.row].id),
+            animated: true)
     }
 }
 

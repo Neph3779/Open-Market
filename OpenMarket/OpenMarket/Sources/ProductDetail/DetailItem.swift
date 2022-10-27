@@ -10,7 +10,6 @@ import Foundation
 struct DetailItem: Decodable {
     let id: Int
     let vendorId: Int
-    let vendorName: String
     let name: String
     let description: String
     let thumbnail: String
@@ -19,13 +18,13 @@ struct DetailItem: Decodable {
     let bargainPrice: Double
     let discountedPrice: Double
     let images: [Image]
-    let vendors: [Vendor]
+    let vendors: Vendor
     let stock: Int
     let createdAt: String
     let issuedAt: String
 
     private enum CodingKeys: String, CodingKey {
-        case id, vendorName, name, description, thumbnail, currency, price, stock, images, vendors
+        case id, name, description, thumbnail, currency, price, stock, images, vendors
         case vendorId = "vendor_id"
         case bargainPrice = "bargain_price"
         case discountedPrice = "discounted_price"
