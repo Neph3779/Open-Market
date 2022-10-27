@@ -25,7 +25,7 @@ struct DetailItem: Decodable {
     let issuedAt: String
 
     private enum CodingKeys: String, CodingKey {
-        case id, vendorName, name, description, thumbnail, currency, price, stock, images
+        case id, vendorName, name, description, thumbnail, currency, price, stock, images, vendors
         case vendorId = "vendor_id"
         case bargainPrice = "bargain_price"
         case discountedPrice = "discounted_price"
