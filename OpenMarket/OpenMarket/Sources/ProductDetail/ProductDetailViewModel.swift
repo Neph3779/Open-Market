@@ -7,6 +7,6 @@
 
 import Foundation
 
-final class ProductViewModel {
+final class ProductDetailViewModel {
     
 }
