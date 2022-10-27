@@ -161,6 +161,12 @@ extension MarketItemsViewController: UICollectionViewDataSource {
     }
 }
 
+extension MarketItemsViewController: UICollectionViewDelegate {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        navigationController?.pushViewController(ProductDetailViewController(), animated: true)
+    }
+}
+
 extension MarketItemsViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let listCellWidth: CGFloat = collectionView.safeAreaLayoutGuide.layoutFrame.width

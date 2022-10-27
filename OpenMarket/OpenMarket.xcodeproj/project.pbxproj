@@ -298,10 +298,10 @@
 			isa = PBXGroup;
 			children = (
 				32D6B1172909FE2E00087D13 /* ProductDetailViewController.swift */,
-				32D6B120290A0C8C00087D13 /* ProductImageCollectionViewCell.swift */,
 				32D6B11A2909FE4F00087D13 /* ProductDetailViewModel.swift */,
 				32D6B11C2909FECA00087D13 /* ProductDetailAPI.swift */,
 				32D6B11E290A007A00087D13 /* DetailItem.swift */,
+				32D6B120290A0C8C00087D13 /* ProductImageCollectionViewCell.swift */,
 			);
 			path = ProductDetail;
 			sourceTree = "<group>";
