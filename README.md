@@ -51,3 +51,22 @@
 > API 이용에 필요한 벤더 정보도 함께 전달드리니 API를 참고하시어 이용바랍니다. {    "name": "secondVendor",    "accessId":"secondVendor",    "secret":"kbs111111",    "identifier": "9f12b7ca-4aa0-11ed-a200-83859d23efd1" }
 
 다음과 같은 메세지를 전달받았고 API 명세서를 확인해보니 model쪽의 변경, encoding 로직의 변경도 필요했기에 리팩토링을 진행하면서 지난 프로젝트 진행 기간중에 완료하지 못한 구현을 진행하기로 했다.
+
+
+
+서버로 post시
+
+사용자로부터 가져온 정보를
+
+encoding이 가능한 모델에 담고 // encoding 실패 가능
+
+이 모델을 바탕으로 request의 httpBody를 제작하고 + 요청에 맞는 request header를 구성하고 // request 구성시 에러 발생 가능, RequestBodyEncoder 객체 사용
+
+request를 만들어 URLSession의 dataTask를 실행 // dataTask completion에 에러처리, 데이터 처리 로직 필요
+
+
+
+request를 만드는 객체 필요 (?) 
+
+모든 api call마다 필요한 request 형식이 다를텐데 
+
