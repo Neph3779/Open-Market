@@ -46,6 +46,7 @@
 		32D6B11D2909FECA00087D13 /* ProductDetailAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32D6B11C2909FECA00087D13 /* ProductDetailAPI.swift */; };
 		32D6B11F290A007A00087D13 /* DetailItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32D6B11E290A007A00087D13 /* DetailItem.swift */; };
 		32D6B121290A0C8C00087D13 /* ProductImageCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32D6B120290A0C8C00087D13 /* ProductImageCollectionViewCell.swift */; };
+		32D6B123290BCB6B00087D13 /* UIViewControllerExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32D6B122290BCB6B00087D13 /* UIViewControllerExtension.swift */; };
 		C70FB0FB25BEF61C00C9924E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C70FB0FA25BEF61C00C9924E /* AppDelegate.swift */; };
 		C70FB0FF25BEF61C00C9924E /* MarketItemsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C70FB0FE25BEF61C00C9924E /* MarketItemsViewController.swift */; };
 		C70FB10425BEF61D00C9924E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C70FB10325BEF61D00C9924E /* Assets.xcassets */; };
@@ -104,6 +105,7 @@
 		32D6B11C2909FECA00087D13 /* ProductDetailAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductDetailAPI.swift; sourceTree = "<group>"; };
 		32D6B11E290A007A00087D13 /* DetailItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailItem.swift; sourceTree = "<group>"; };
 		32D6B120290A0C8C00087D13 /* ProductImageCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductImageCollectionViewCell.swift; sourceTree = "<group>"; };
+		32D6B122290BCB6B00087D13 /* UIViewControllerExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIViewControllerExtension.swift; sourceTree = "<group>"; };
 		C70FB0F725BEF61C00C9924E /* OpenMarket.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OpenMarket.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C70FB0FA25BEF61C00C9924E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		C70FB0FE25BEF61C00C9924E /* MarketItemsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketItemsViewController.swift; sourceTree = "<group>"; };
@@ -227,6 +229,7 @@
 			children = (
 				028CB614264DFF56005E7914 /* DataExtension.swift */,
 				1C9ABB632660BF00009A1FFC /* UIViewExtension.swift */,
+				32D6B122290BCB6B00087D13 /* UIViewControllerExtension.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -482,6 +485,7 @@
 				32D6B11B2909FE4F00087D13 /* ProductDetailViewModel.swift in Sources */,
 				02899E742653559C00DB4A0B /* RequestData.swift in Sources */,
 				320B02BA2902991E005E74CA /* HTTPMethod.swift in Sources */,
+				32D6B123290BCB6B00087D13 /* UIViewControllerExtension.swift in Sources */,
 				02A7EE6226576F9800562DF8 /* ItemListCell.swift in Sources */,
 				02B39A46265CDC3A00EBCF44 /* SessionManagerProtocol.swift in Sources */,
 				C70FB0FF25BEF61C00C9924E /* MarketItemsViewController.swift in Sources */,

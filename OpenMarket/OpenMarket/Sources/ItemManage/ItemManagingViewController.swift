@@ -326,12 +326,7 @@ extension ItemManagingViewController {
         case .success(let item):
             print(item.id)
         case .failure(let error):
-            DispatchQueue.main.async {
-                let alert = UIAlertController(title: error.name, message: error.description, preferredStyle: .alert)
-                let yesAction = UIAlertAction(title: "확인", style: .cancel) { _ in  self.dismiss(animated: true, completion: nil) }
-                alert.addAction(yesAction)
-                self.present(alert, animated: true, completion: nil)
-            }
+            showErrorAlert(error: error)
         }
     }
 

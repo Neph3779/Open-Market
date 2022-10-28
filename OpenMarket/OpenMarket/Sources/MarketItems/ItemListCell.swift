@@ -32,13 +32,17 @@ class ItemListCell: UICollectionViewCell {
 
     var item: MarketItem? {
         didSet {
-            fetchImageDataTask = SessionManager.shared.fetchImageDataTask(urlString: item?.thumbnail) { data in
-                guard let image = UIImage(data: data) else { return }
-                DispatchQueue.main.async {
-                    self.imageView.image = image
+            SessionManager.shared.fetchImage(urlString: item?.thumbnail) { result in
+                switch result {
+                case .success(let data):
+                    guard let image = UIImage(data: data) else { return }
+                    DispatchQueue.main.async {
+                        self.imageView.image = image
+                    }
+                case .failure:
+                    break
                 }
             }
-            fetchImageDataTask?.resume()
 
             titleLabel.text = item?.name
 

@@ -5,7 +5,7 @@
 //  Created by 천수현 on 2022/10/27.
 //
 
-import Foundation
+import UIKit
 
 final class ProductDetailAPI {
     private let sessionManager: SessionManagerProtocol
@@ -23,6 +23,21 @@ final class ProductDetailAPI {
                     return
                 }
                 completionHandler(.success(decodedData))
+            case .failure(let error):
+                completionHandler(.failure(error))
+            }
+        }
+    }
+
+    func getProductImage(url: String, completionHandler: @escaping (Result<UIImage, OpenMarketError>) -> Void) {
+        sessionManager.fetchImage(urlString: url) { result in
+            switch result {
+            case .success(let data):
+                guard let image = UIImage(data: data) else {
+                    completionHandler(.failure(.canNotConvertDataToImage))
+                    return
+                }
+                completionHandler(.success(image))
             case .failure(let error):
                 completionHandler(.failure(error))
             }

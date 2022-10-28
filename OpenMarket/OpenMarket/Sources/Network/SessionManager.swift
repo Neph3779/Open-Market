@@ -103,14 +103,14 @@ class SessionManager: SessionManagerProtocol {
         }
     }
 
-    func fetchImageDataTask(urlString: String?, completionHandler: @escaping (Data) -> Void) -> URLSessionDataTask? {
+    func fetchImage(urlString: String?, completionHandler: @escaping (Result<Data, OpenMarketError>) -> Void) {
         guard let urlString = urlString,
-              let url = URL(string: urlString) else { return nil }
-
-        return dataTask(request: URLRequest(url: url)) { result in
-            guard let data = try? result.get() else { return }
-            return completionHandler(data)
+              let url = URL(string: urlString) else {
+            completionHandler(.failure(.invalidURL))
+            return
         }
+
+        dataTask(request: URLRequest(url: url), completionHandler: completionHandler).resume()
     }
 
     private func requestWithBody<APIModel: RequestData>(request: URLRequest,

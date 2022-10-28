@@ -23,5 +23,5 @@ protocol SessionManagerProtocol {
                        completionHandler: @escaping (Result<Data, OpenMarketError>) -> Void)
     func deleteProduct(deleteURI: String,
                        completionHandler: @escaping (Result<Data, OpenMarketError>) -> Void)
-    func fetchImageDataTask(urlString: String?, completionHandler: @escaping (Data) -> Void) -> URLSessionDataTask?
+    func fetchImage(urlString: String?, completionHandler: @escaping (Result<Data, OpenMarketError>) -> Void)
 }

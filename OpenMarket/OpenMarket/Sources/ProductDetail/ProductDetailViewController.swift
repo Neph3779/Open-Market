@@ -71,29 +71,47 @@ final class ProductDetailViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        setViewModelFetchCompletion()
+        setProductFetchCompletion()
         fetchDetailProductData()
+        setImageFetchCompletion()
+        fetchImageData()
         setUpOuterScrollView()
         setUpCollectionView()
         addLabelConstraints()
     }
 
-    private func setViewModelFetchCompletion() {
-        viewModel.fetchProductDataCompletion = { result in
+    private func fetchDetailProductData() {
+        viewModel.dispatchGroup.enter()
+        viewModel.fetchProductData()
+    }
+
+    private func setProductFetchCompletion() {
+        viewModel.productFetchCompletion = { result in
             switch result {
             case .success(let product):
                 DispatchQueue.main.async {
                     self.viewModel.detailProduct = product
                     self.setLabelContents()
+                    self.viewModel.dispatchGroup.leave()
                 }
             case .failure(let error):
-                print(error) // FIXME: alert으로 수정
+                self.showErrorAlert(error: error)
             }
         }
     }
 
-    private func fetchDetailProductData() {
-        viewModel.fetchProductData()
+    private func fetchImageData() {
+        viewModel.dispatchGroup.notify(queue: DispatchQueue.main) {
+            self.viewModel.fetchImageData()
+        }
+    }
+
+    private func setImageFetchCompletion() {
+        viewModel.imageFetchCompletion = {
+            DispatchQueue.main.async {
+                self.imageCollectionView.reloadData()
+            }
+        }
     }
 
     private func setUpOuterScrollView() {
@@ -127,7 +145,6 @@ final class ProductDetailViewController: UIViewController {
     private func addLabelConstraints() {
         [imageNumberLabel, productNameLabel, stockLabel, priceLabel, discountedPriceLabel, descriptionLabel].forEach {
             outerScrollView.addSubview($0)
-            $0.text = "test text\n\n"
             $0.numberOfLines = 0
         }
         NSLayoutConstraint.activate([
@@ -161,7 +178,7 @@ final class ProductDetailViewController: UIViewController {
 
 extension ProductDetailViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return viewModel.images.count
+        return viewModel.productImages.count
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -169,7 +186,7 @@ extension ProductDetailViewController: UICollectionViewDataSource {
             withReuseIdentifier: ProductImageCollectionViewCell.reuseIdentifier,
             for: indexPath
         ) as? ProductImageCollectionViewCell else { return UICollectionViewCell() }
-        cell.setContents(image: viewModel.images[indexPath.row])
+        cell.setContents(image: viewModel.productImages[indexPath.row])
         return cell
     }
 }

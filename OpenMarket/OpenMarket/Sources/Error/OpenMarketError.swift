@@ -18,6 +18,7 @@ enum OpenMarketError: Error, Equatable {
     case bodyEncodingError
     case requestDataTypeNotMatch
     case requestGETWithData
+    case canNotConvertDataToImage
 
     var name: String {
         return String(describing: self)
@@ -37,6 +38,8 @@ enum OpenMarketError: Error, Equatable {
             return "네트워크 연결이 불안정합니다."
         case .bodyEncodingError:
             return "송신 데이터 인코딩에 실패했습니다."
+        case .canNotConvertDataToImage:
+            return "이미지 데이터 변환에 실패했습니다."
         default:
             return "Unknown Error"
         }
