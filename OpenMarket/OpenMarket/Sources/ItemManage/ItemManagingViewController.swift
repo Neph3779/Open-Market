@@ -240,12 +240,14 @@ extension ItemManagingViewController: PHPickerViewControllerDelegate {
     func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
         let items = results.map(\.itemProvider)
         let lastItemIndex = items.count - 1
+        let dispatchGroup = DispatchGroup()
 
         if items.isEmpty {
             dismiss(animated: true, completion: nil)
             return
         }
-        // FIXME: Dispatch group으로 리팩토링 예정
+
+        dispatchGroup.enter()
         for index in 0...lastItemIndex {
             items[index].loadObject(ofClass: UIImage.self) { [weak self] (image, _) in
                 guard let self = self else { return }
@@ -257,10 +259,14 @@ extension ItemManagingViewController: PHPickerViewControllerDelegate {
                 }
 
                 if index == lastItemIndex {
-                    let didErrorOccurred = items.count != self.viewModel.pickedImages.count
-                    self.pickerCompletion(didErrorOccurred: didErrorOccurred)
+                    dispatchGroup.leave()
                 }
             }
+        }
+
+        dispatchGroup.notify(queue: DispatchQueue.global()) {
+            let didErrorOccurred = items.count != self.viewModel.pickedImages.count
+            self.pickerCompletion(didErrorOccurred: didErrorOccurred)
         }
     }
 
