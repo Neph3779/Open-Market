@@ -125,6 +125,8 @@ final class ProductDetailViewController: UIViewController {
     }
 
     private func setUpCollectionView() {
+        imageCollectionView.contentInsetAdjustmentBehavior = .never
+        imageCollectionView.decelerationRate = .fast
         imageCollectionView.isPagingEnabled = true
         imageCollectionView.contentInset = UIEdgeInsets(top: 30, left: 30, bottom: 30, right: 30)
         imageCollectionView.showsVerticalScrollIndicator = false
@@ -167,7 +169,7 @@ final class ProductDetailViewController: UIViewController {
 
     private func setLabelContents() {
         guard let product = viewModel.detailProduct else { return }
-        imageNumberLabel.text = String(product.images.count)
+        imageNumberLabel.text = "1 / \(product.images.count)"
         productNameLabel.text = product.name
         stockLabel.text = String(product.stock)
         priceLabel.text = String(product.price)
@@ -196,5 +198,37 @@ extension ProductDetailViewController: UICollectionViewDelegateFlowLayout {
         let width = collectionView.frame.width
         let height = collectionView.frame.height
         return CGSize(width: width, height: height)
+    }
+}
+
+extension ProductDetailViewController: UIScrollViewDelegate {
+    func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
+        let cellWidthIncludeSpacing = imageCollectionView.frame.width
+
+        var offset = targetContentOffset.pointee
+        let index = (offset.x + scrollView.contentInset.left) / cellWidthIncludeSpacing
+        var roundedIndex: CGFloat = round(index)
+
+        if scrollView.contentOffset.x > targetContentOffset.pointee.x {
+            roundedIndex = floor(index)
+        } else if scrollView.contentOffset.x < targetContentOffset.pointee.x {
+            roundedIndex = ceil(index)
+        } else {
+            roundedIndex = round(index)
+        }
+
+        if viewModel.currentImageCollectionIndex > roundedIndex {
+            viewModel.currentImageCollectionIndex -= 1
+            roundedIndex = viewModel.currentImageCollectionIndex
+        } else if viewModel.currentImageCollectionIndex < roundedIndex {
+            viewModel.currentImageCollectionIndex += 1
+            roundedIndex = viewModel.currentImageCollectionIndex
+        }
+
+        imageNumberLabel.text = "\(Int(viewModel.currentImageCollectionIndex + 1)) / \(viewModel.productImages.count)"
+
+        offset = CGPoint(x: roundedIndex * cellWidthIncludeSpacing - scrollView.contentInset.left,
+                         y: scrollView.contentInset.top)
+        targetContentOffset.pointee = offset
     }
 }

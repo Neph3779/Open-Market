@@ -15,6 +15,7 @@ final class ProductDetailViewModel {
     var productFetchCompletion: ((Result<DetailItem, OpenMarketError>) -> Void)?
     var imageFetchCompletion: (() -> Void)?
     let dispatchGroup = DispatchGroup()
+    var currentImageCollectionIndex: CGFloat = 0
 
     init(productId: Int) {
         self.productId = productId
