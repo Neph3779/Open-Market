@@ -128,7 +128,6 @@ final class ProductDetailViewController: UIViewController {
         imageCollectionView.contentInsetAdjustmentBehavior = .never
         imageCollectionView.decelerationRate = .fast
         imageCollectionView.isPagingEnabled = true
-        imageCollectionView.contentInset = UIEdgeInsets(top: 30, left: 30, bottom: 30, right: 30)
         imageCollectionView.showsVerticalScrollIndicator = false
         imageCollectionView.showsHorizontalScrollIndicator = false
         imageCollectionView.register(ProductImageCollectionViewCell.self,
