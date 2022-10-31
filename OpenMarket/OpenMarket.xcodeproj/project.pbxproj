@@ -36,7 +36,6 @@
 		320B02B829029907005E74CA /* RequestURLPath.swift in Sources */ = {isa = PBXBuildFile; fileRef = 320B02B729029907005E74CA /* RequestURLPath.swift */; };
 		320B02BA2902991E005E74CA /* HTTPMethod.swift in Sources */ = {isa = PBXBuildFile; fileRef = 320B02B92902991E005E74CA /* HTTPMethod.swift */; };
 		3265CC6B2903CD9600A3E047 /* ItemManagingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3265CC6A2903CD9600A3E047 /* ItemManagingViewModel.swift */; };
-		32CDB2302901818400AA480B /* OpenMarketService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32CDB22F2901818400AA480B /* OpenMarketService.swift */; };
 		32D6B1102909737900087D13 /* MarketItemsAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32D6B10F2909737900087D13 /* MarketItemsAPI.swift */; };
 		32D6B1122909738100087D13 /* ItemManageAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32D6B1112909738100087D13 /* ItemManageAPI.swift */; };
 		32D6B114290975B600087D13 /* MarketItemsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32D6B113290975B600087D13 /* MarketItemsViewModel.swift */; };
@@ -95,7 +94,6 @@
 		320B02B729029907005E74CA /* RequestURLPath.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestURLPath.swift; sourceTree = "<group>"; };
 		320B02B92902991E005E74CA /* HTTPMethod.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPMethod.swift; sourceTree = "<group>"; };
 		3265CC6A2903CD9600A3E047 /* ItemManagingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemManagingViewModel.swift; sourceTree = "<group>"; };
-		32CDB22F2901818400AA480B /* OpenMarketService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OpenMarketService.swift; sourceTree = "<group>"; };
 		32D6B10F2909737900087D13 /* MarketItemsAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketItemsAPI.swift; sourceTree = "<group>"; };
 		32D6B1112909738100087D13 /* ItemManageAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemManageAPI.swift; sourceTree = "<group>"; };
 		32D6B113290975B600087D13 /* MarketItemsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketItemsViewModel.swift; sourceTree = "<group>"; };
@@ -150,16 +148,6 @@
 			path = Resources;
 			sourceTree = "<group>";
 		};
-		024D5D3F264B9F6800980107 /* Models */ = {
-			isa = PBXGroup;
-			children = (
-				1C7D1D76264BA59700ADE23A /* APIModel */,
-				024D5D48264BA62400980107 /* MarketItem.swift */,
-				024D5D46264BA1FC00980107 /* MarketPage.swift */,
-			);
-			path = Models;
-			sourceTree = "<group>";
-		};
 		024D5D41264B9F9100980107 /* EntryPoint */ = {
 			isa = PBXGroup;
 			children = (
@@ -172,7 +160,6 @@
 			isa = PBXGroup;
 			children = (
 				0260978B264BCF400086A8C5 /* Protocols */,
-				024D5D3F264B9F6800980107 /* Models */,
 				1C3FE507264D399D0051D507 /* Network */,
 				32D6B10D2909155E00087D13 /* MarketItems */,
 				32D6B10E2909156D00087D13 /* ItemManage */,
@@ -237,7 +224,7 @@
 		1C3FE507264D399D0051D507 /* Network */ = {
 			isa = PBXGroup;
 			children = (
-				32CDB22F2901818400AA480B /* OpenMarketService.swift */,
+				1C7D1D76264BA59700ADE23A /* APIModel */,
 				1C3FE508264D39BC0051D507 /* SessionManager.swift */,
 				02899E7C2653563700DB4A0B /* RequestBodyEncoder.swift */,
 				320B02B92902991E005E74CA /* HTTPMethod.swift */,
@@ -252,6 +239,8 @@
 				02899E75265355BC00DB4A0B /* DeletingItem.swift */,
 				1C7D1D84264BABA800ADE23A /* PatchingItem.swift */,
 				1C7D1D77264BA5B200ADE23A /* PostRequest.swift */,
+				024D5D48264BA62400980107 /* MarketItem.swift */,
+				024D5D46264BA1FC00980107 /* MarketPage.swift */,
 			);
 			path = APIModel;
 			sourceTree = "<group>";
@@ -491,7 +480,6 @@
 				C70FB0FF25BEF61C00C9924E /* MarketItemsViewController.swift in Sources */,
 				1C7D1D85264BABA800ADE23A /* PatchingItem.swift in Sources */,
 				02899E722653552B00DB4A0B /* JSONData.swift in Sources */,
-				32CDB2302901818400AA480B /* OpenMarketService.swift in Sources */,
 				32D6B121290A0C8C00087D13 /* ProductImageCollectionViewCell.swift in Sources */,
 				32D6B1182909FE2E00087D13 /* ProductDetailViewController.swift in Sources */,
 				C70FB0FB25BEF61C00C9924E /* AppDelegate.swift in Sources */,

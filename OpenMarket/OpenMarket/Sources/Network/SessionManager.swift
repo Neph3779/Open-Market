@@ -22,10 +22,12 @@ class SessionManager: SessionManagerProtocol {
     func healthCheck(completionHandler: @escaping (Result<Data, OpenMarketError>) -> Void) {
         do {
             let url = try RequestURLPath.healthCheck()
-            let request = try headerConfiguredRequest(method: .get, url: url)
+            let request = headerConfiguredRequest(method: .get, url: url)
             dataTask(request: request, completionHandler: completionHandler).resume()
+        } catch let error as OpenMarketError {
+            completionHandler(.failure(error))
         } catch {
-
+            completionHandler(.failure(.unknownError))
         }
     }
 
@@ -34,10 +36,12 @@ class SessionManager: SessionManagerProtocol {
                         completionHandler: @escaping (Result<Data, OpenMarketError>) -> Void) {
         do {
             let url = try RequestURLPath.getProductList(pageNumber: pageNumber, itemsPerPage: itemsPerPage)
-            let request = try headerConfiguredRequest(method: .get, url: url)
+            let request = headerConfiguredRequest(method: .get, url: url)
             dataTask(request: request, completionHandler: completionHandler).resume()
+        } catch let error as OpenMarketError {
+            completionHandler(.failure(error))
         } catch {
-
+            completionHandler(.failure(.unknownError))
         }
     }
 
@@ -45,10 +49,12 @@ class SessionManager: SessionManagerProtocol {
                           completionHandler: @escaping (Result<Data, OpenMarketError>) -> Void) {
         do {
             let url = try RequestURLPath.getProductDetail(productId: productId)
-            let request = try headerConfiguredRequest(method: .get, url: url)
+            let request = headerConfiguredRequest(method: .get, url: url)
             dataTask(request: request, completionHandler: completionHandler).resume()
+        } catch let error as OpenMarketError {
+            completionHandler(.failure(error))
         } catch {
-
+            completionHandler(.failure(.unknownError))
         }
     }
 
@@ -56,12 +62,14 @@ class SessionManager: SessionManagerProtocol {
                      completionHandler: @escaping (Result<Data, OpenMarketError>) -> Void) {
         do {
             let url = try RequestURLPath.postProduct()
-            var request = try headerConfiguredRequest(method: .post, url: url)
+            var request = headerConfiguredRequest(method: .post, url: url)
             request.setValue(identifier, forHTTPHeaderField: "identifier")
             request = try requestWithBody(request: request, method: .post, data: data)
             dataTask(request: request, completionHandler: completionHandler).resume()
+        } catch let error as OpenMarketError {
+            completionHandler(.failure(error))
         } catch {
-
+            completionHandler(.failure(.unknownError))
         }
     }
 
@@ -69,12 +77,13 @@ class SessionManager: SessionManagerProtocol {
                         completionHandler: @escaping (Result<Data, OpenMarketError>) -> Void) {
         do {
             let url = try RequestURLPath.checkDeleteURI(productId: productId)
-            let request = try headerConfiguredRequest(method: .post, url: url)
+            let request = headerConfiguredRequest(method: .post, url: url)
             /* http body 구성 작업*/
-
             dataTask(request: request, completionHandler: completionHandler).resume()
+        } catch let error as OpenMarketError {
+            completionHandler(.failure(error))
         } catch {
-
+            completionHandler(.failure(.unknownError))
         }
     }
 
@@ -82,11 +91,13 @@ class SessionManager: SessionManagerProtocol {
                        completionHandler: @escaping (Result<Data, OpenMarketError>) -> Void) {
         do {
             let url = try RequestURLPath.modifyProduct(productId: productId)
-            let request = try headerConfiguredRequest(method: .patch, url: url)
+            let request = headerConfiguredRequest(method: .patch, url: url)
             /* http body 구성 작업*/
             dataTask(request: request, completionHandler: completionHandler).resume()
+        } catch let error as OpenMarketError {
+            completionHandler(.failure(error))
         } catch {
-
+            completionHandler(.failure(.unknownError))
         }
     }
 
@@ -94,12 +105,14 @@ class SessionManager: SessionManagerProtocol {
                        completionHandler: @escaping (Result<Data, OpenMarketError>) -> Void) {
         do {
             let url = try RequestURLPath.deleteProduct(deleteURI: deleteURI)
-            let request = try headerConfiguredRequest(method: .delete, url: url)
+            let request = headerConfiguredRequest(method: .delete, url: url)
             /* http body 구성 작업*/
 
             dataTask(request: request, completionHandler: completionHandler).resume()
+        } catch let error as OpenMarketError {
+            completionHandler(.failure(error))
         } catch {
-
+            completionHandler(.failure(.unknownError))
         }
     }
 
@@ -135,7 +148,7 @@ class SessionManager: SessionManagerProtocol {
         return request
     }
 
-    private func headerConfiguredRequest(method: HTTPMethod, url: URL) throws -> URLRequest {
+    private func headerConfiguredRequest(method: HTTPMethod, url: URL) -> URLRequest {
         var request = URLRequest(url: url)
         request.httpMethod = method.rawValue
         request.setValue(method.mimeType, forHTTPHeaderField: "Content-Type")

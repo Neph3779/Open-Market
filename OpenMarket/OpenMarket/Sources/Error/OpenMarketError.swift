@@ -19,6 +19,7 @@ enum OpenMarketError: Error, Equatable {
     case requestDataTypeNotMatch
     case requestGETWithData
     case canNotConvertDataToImage
+    case unknownError
 
     var name: String {
         return String(describing: self)
