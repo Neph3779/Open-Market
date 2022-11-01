@@ -15,9 +15,14 @@ final class ProductDetailViewController: UIViewController {
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         return scrollView
     }()
-    private let imageCollectionView: UICollectionView = {
+    private let flowLayout: UICollectionViewFlowLayout = {
         let flowLayout = UICollectionViewFlowLayout()
         flowLayout.scrollDirection = .horizontal
+        return flowLayout
+    }()
+    private lazy var imageCollectionView: UICollectionView = {
+        //        let flowLayout = UICollectionViewFlowLayout()
+        //        flowLayout.scrollDirection = .horizontal
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: flowLayout)
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         return collectionView
@@ -101,7 +106,7 @@ final class ProductDetailViewController: UIViewController {
     private func setUpCollectionView() {
         imageCollectionView.contentInsetAdjustmentBehavior = .never
         imageCollectionView.decelerationRate = .fast
-        imageCollectionView.isPagingEnabled = true
+        //        imageCollectionView.isPagingEnabled = true
         imageCollectionView.showsVerticalScrollIndicator = false
         imageCollectionView.showsHorizontalScrollIndicator = false
         imageCollectionView.register(ProductImageCollectionViewCell.self,
@@ -200,8 +205,10 @@ extension ProductDetailViewController: UIScrollViewDelegate {
 
         imageNumberLabel.text = "\(Int(viewModel.currentImageCollectionIndex + 1)) / \(viewModel.productImages.count)"
 
-        offset = CGPoint(x: roundedIndex * cellWidthIncludeSpacing - scrollView.contentInset.left,
+        offset = CGPoint(x: roundedIndex * cellWidthIncludeSpacing
+                         + flowLayout.minimumInteritemSpacing * viewModel.currentImageCollectionIndex + 1,
                          y: scrollView.contentInset.top)
+
         targetContentOffset.pointee = offset
     }
 }
