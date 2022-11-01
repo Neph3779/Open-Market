@@ -71,47 +71,21 @@ final class ProductDetailViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        setProductFetchCompletion()
-        fetchDetailProductData()
-        setImageFetchCompletion()
-        fetchImageData()
+        bind()
+        fetchData()
         setUpOuterScrollView()
         setUpCollectionView()
         addLabelConstraints()
     }
 
-    private func fetchDetailProductData() {
-        viewModel.dispatchGroup.enter()
-        viewModel.fetchProductData()
+    private func bind() {
+        viewModel.setLabelContents = setLabelContents
+        viewModel.showErrorAlert = showErrorAlert(error:)
+        viewModel.reloadCollectionView = imageCollectionView.reloadData
     }
 
-    private func setProductFetchCompletion() {
-        viewModel.productFetchCompletion = { result in
-            switch result {
-            case .success(let product):
-                DispatchQueue.main.async {
-                    self.viewModel.detailProduct = product
-                    self.setLabelContents()
-                    self.viewModel.dispatchGroup.leave()
-                }
-            case .failure(let error):
-                self.showErrorAlert(error: error)
-            }
-        }
-    }
-
-    private func fetchImageData() {
-        viewModel.dispatchGroup.notify(queue: DispatchQueue.main) {
-            self.viewModel.fetchImageData()
-        }
-    }
-
-    private func setImageFetchCompletion() {
-        viewModel.imageFetchCompletion = {
-            DispatchQueue.main.async {
-                self.imageCollectionView.reloadData()
-            }
-        }
+    private func fetchData() {
+        viewModel.fetchData()
     }
 
     private func setUpOuterScrollView() {
