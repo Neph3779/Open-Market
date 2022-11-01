@@ -107,7 +107,6 @@ class SessionManager: SessionManagerProtocol {
             let url = try RequestURLPath.deleteProduct(deleteURI: deleteURI)
             let request = headerConfiguredRequest(method: .delete, url: url)
             /* http body 구성 작업*/
-
             dataTask(request: request, completionHandler: completionHandler).resume()
         } catch let error as OpenMarketError {
             completionHandler(.failure(error))
@@ -163,14 +162,15 @@ class SessionManager: SessionManagerProtocol {
             }
 
             guard let httpResponse = response as? HTTPURLResponse else {
-                return completionHandler(.failure(.didNotReceivedResponse))
+                return completionHandler(.failure(.canNotConvertResponse))
             }
 
             guard (200...299).contains(httpResponse.statusCode) else {
                 return completionHandler(.failure(.wrongResponse(httpResponse.statusCode)))
             }
 
-            guard let data = data else {
+            guard let data = data,
+                  data.count != 0 else {
                 return completionHandler(.failure(.didNotReceivedData))
             }
 

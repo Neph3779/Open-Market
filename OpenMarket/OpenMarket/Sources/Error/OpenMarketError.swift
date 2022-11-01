@@ -10,7 +10,7 @@ import Foundation
 enum OpenMarketError: Error, Equatable {
     case invalidURL
     case invalidData
-    case didNotReceivedResponse
+    case canNotConvertResponse
     case wrongResponse(_ statusCode: Int)
     case didNotReceivedData
     case JSONEncodingError
@@ -29,7 +29,7 @@ enum OpenMarketError: Error, Equatable {
         switch self {
         case .invalidData:
             return "유효하지 않은 데이터입니다."
-        case .didNotReceivedResponse:
+        case .canNotConvertResponse:
             return "서버로부터 응답이 없습니다."
         case .wrongResponse(let statusCode):
             return "[Status Code: \(statusCode)] 잘못된 응답입니다."

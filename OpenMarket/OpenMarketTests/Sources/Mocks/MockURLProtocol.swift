@@ -6,9 +6,10 @@
 //
 
 import Foundation
+@testable import OpenMarket
 
 class MockURLProtocol: URLProtocol {
-    static var requestHandler: ((URLRequest) -> (HTTPURLResponse?, Data?, Error?))?
+    static var requestHandler: ((URLRequest) -> (URLResponse?, Data?, Error?))?
 
     class override func canInit(with request: URLRequest) -> Bool {
         true
