@@ -77,6 +77,7 @@ final class ProductDetailViewController: UIViewController {
         super.viewDidLoad()
         bind()
         fetchData()
+        setNavigationItem()
         setUpOuterScrollView()
         setUpCollectionView()
         addLabelConstraints()
@@ -90,6 +91,27 @@ final class ProductDetailViewController: UIViewController {
 
     private func fetchData() {
         viewModel.fetchData()
+    }
+
+    private func setNavigationItem() {
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .action,
+                                                            target: self, action: #selector(editButtonTapped(_:)))
+
+    }
+
+    @objc private func editButtonTapped(_ sender: UIBarButtonItem) {
+        let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        let modifyAction = UIAlertAction(title: "수정", style: .default) { [weak self] _ in
+            guard let self = self else { return }
+            self.navigationController?.pushViewController(ItemManagingViewController(mode: .modify), animated: true)
+        }
+        let deleteAction = UIAlertAction(title: "삭제", style: .destructive) { _ in
+            // delete
+        }
+        let cancelAction = UIAlertAction(title: "취소", style: .cancel)
+        [modifyAction, deleteAction, cancelAction].forEach { actionSheet.addAction($0) }
+
+        present(actionSheet, animated: true)
     }
 
     private func setUpOuterScrollView() {

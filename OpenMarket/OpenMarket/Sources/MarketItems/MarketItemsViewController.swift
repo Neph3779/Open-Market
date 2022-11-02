@@ -77,7 +77,7 @@ class MarketItemsViewController: UIViewController {
         navigationItem.rightBarButtonItem = registerItemButton
     }
 
-    private func fetchPageData() {
+    private func fetchPageData() { // FIXME: refresh, 추가 페이지 로드를 구분해야함
         viewModel.marketItemsAPI.getPage(id: viewModel.lastPageId + 1,
                                          completionHandler: fetchPageDataCompletionHandler)
     }

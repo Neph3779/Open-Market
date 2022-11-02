@@ -33,6 +33,7 @@
 		1CFB2EE9265A4E510071ECCB /* ItemManagingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CFB2EE8265A4E510071ECCB /* ItemManagingViewController.swift */; };
 		320B02B829029907005E74CA /* RequestURLPath.swift in Sources */ = {isa = PBXBuildFile; fileRef = 320B02B729029907005E74CA /* RequestURLPath.swift */; };
 		320B02BA2902991E005E74CA /* HTTPMethod.swift in Sources */ = {isa = PBXBuildFile; fileRef = 320B02B92902991E005E74CA /* HTTPMethod.swift */; };
+		321D66922912A01200B015DE /* DeleteURIRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 321D66912912A01200B015DE /* DeleteURIRequest.swift */; };
 		3265CC6B2903CD9600A3E047 /* ItemManagingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3265CC6A2903CD9600A3E047 /* ItemManagingViewModel.swift */; };
 		32D6B1102909737900087D13 /* MarketItemsAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32D6B10F2909737900087D13 /* MarketItemsAPI.swift */; };
 		32D6B1122909738100087D13 /* ItemManageAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32D6B1112909738100087D13 /* ItemManageAPI.swift */; };
@@ -89,6 +90,7 @@
 		1CFB2EE8265A4E510071ECCB /* ItemManagingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemManagingViewController.swift; sourceTree = "<group>"; };
 		320B02B729029907005E74CA /* RequestURLPath.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestURLPath.swift; sourceTree = "<group>"; };
 		320B02B92902991E005E74CA /* HTTPMethod.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPMethod.swift; sourceTree = "<group>"; };
+		321D66912912A01200B015DE /* DeleteURIRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteURIRequest.swift; sourceTree = "<group>"; };
 		3265CC6A2903CD9600A3E047 /* ItemManagingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemManagingViewModel.swift; sourceTree = "<group>"; };
 		32D6B10F2909737900087D13 /* MarketItemsAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketItemsAPI.swift; sourceTree = "<group>"; };
 		32D6B1112909738100087D13 /* ItemManageAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemManageAPI.swift; sourceTree = "<group>"; };
@@ -235,6 +237,7 @@
 				1C7D1D77264BA5B200ADE23A /* PostRequest.swift */,
 				024D5D48264BA62400980107 /* MarketItem.swift */,
 				024D5D46264BA1FC00980107 /* MarketPage.swift */,
+				321D66912912A01200B015DE /* DeleteURIRequest.swift */,
 			);
 			path = APIModel;
 			sourceTree = "<group>";
@@ -462,6 +465,7 @@
 				32D6B114290975B600087D13 /* MarketItemsViewModel.swift in Sources */,
 				02899E7F2653564F00DB4A0B /* OpenMarketError.swift in Sources */,
 				02A7EE88265A75F100562DF8 /* ItemGridCell.swift in Sources */,
+				321D66922912A01200B015DE /* DeleteURIRequest.swift in Sources */,
 				02A7EE6626577BC800562DF8 /* ItemCellImageView.swift in Sources */,
 				32D6B11B2909FE4F00087D13 /* ProductDetailViewModel.swift in Sources */,
 				02899E742653559C00DB4A0B /* RequestData.swift in Sources */,

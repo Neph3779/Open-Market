@@ -78,4 +78,17 @@ final class ProductDetailViewModel {
             }
         }
     }
+
+    func deleteProduct(secret: String) {
+        productDetailAPI.deleteProduct(productId: productId, secret: secret) { [weak self] result in
+            switch result {
+            case .success:
+                break
+            case .failure(let error):
+                guard let self = self,
+                      let showErrorAlert = self.showErrorAlert else { return }
+                showErrorAlert(error)
+            }
+        }
+    }
 }
