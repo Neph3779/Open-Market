@@ -69,7 +69,7 @@ final class ItemManagingViewController: UIViewController {
     private let itemCurrencyLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = Locale.current.currency?.identifier ?? ItemManagingViewModel.Style.defaultCurrencyCode
+        label.text = Locale.current.currencyCode ?? ItemManagingViewModel.Style.defaultCurrencyCode
         label.setContentHuggingPriority(.required, for: .horizontal)
         label.setContentCompressionResistancePriority(.required, for: .horizontal)
         return label
@@ -267,6 +267,8 @@ extension ItemManagingViewController: PHPickerViewControllerDelegate {
         dispatchGroup.notify(queue: DispatchQueue.global()) {
             let didErrorOccurred = items.count != self.viewModel.pickedImages.count
             self.pickerCompletion(didErrorOccurred: didErrorOccurred)
+            // FIXME: 이미 이미지 선택된 상태에서 또 다른거 선택하면 에러얼럿뜸
+            // FIXME: 난잡한 메서드들 위치, 구조 관련 정리 필요
         }
     }
 
