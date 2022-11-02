@@ -21,40 +21,39 @@ final class ProductDetailViewController: UIViewController {
         return flowLayout
     }()
     private lazy var imageCollectionView: UICollectionView = {
-        //        let flowLayout = UICollectionViewFlowLayout()
-        //        flowLayout.scrollDirection = .horizontal
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: flowLayout)
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         return collectionView
     }()
     private let imageNumberLabel: UILabel = {
         let label = UILabel()
+        label.font = UIFont.boldSystemFont(ofSize: 12)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     private let productNameLabel: UILabel = {
         let label = UILabel()
-        label.font = UIFont.preferredFont(forTextStyle: .title3)
+        label.font = UIFont.preferredFont(forTextStyle: .headline)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     private let stockLabel: UILabel = {
         let label = UILabel()
-        label.font = UIFont.preferredFont(forTextStyle: .subheadline)
+        label.font = UIFont.systemFont(ofSize: 18)
         label.textColor = .lightGray
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     private let priceLabel: UILabel = {
         let label = UILabel()
-        label.font = UIFont.boldSystemFont(ofSize: 13)
+        label.font = UIFont.boldSystemFont(ofSize: 15)
         label.textColor = .red
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     private let discountedPriceLabel: UILabel = {
         let label = UILabel()
-        label.font = UIFont.boldSystemFont(ofSize: 13)
+        label.font = UIFont.boldSystemFont(ofSize: 15)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -106,7 +105,6 @@ final class ProductDetailViewController: UIViewController {
     private func setUpCollectionView() {
         imageCollectionView.contentInsetAdjustmentBehavior = .never
         imageCollectionView.decelerationRate = .fast
-        //        imageCollectionView.isPagingEnabled = true
         imageCollectionView.showsVerticalScrollIndicator = false
         imageCollectionView.showsHorizontalScrollIndicator = false
         imageCollectionView.register(ProductImageCollectionViewCell.self,
@@ -130,16 +128,16 @@ final class ProductDetailViewController: UIViewController {
         NSLayoutConstraint.activate([
             imageNumberLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             imageNumberLabel.topAnchor.constraint(equalTo: imageCollectionView.bottomAnchor, constant: 10),
-            productNameLabel.leadingAnchor.constraint(equalTo: outerScrollView.leadingAnchor),
-            productNameLabel.topAnchor.constraint(equalTo: imageNumberLabel.bottomAnchor, constant: 10),
-            stockLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            stockLabel.topAnchor.constraint(equalTo: imageNumberLabel.bottomAnchor, constant: 10),
-            priceLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            productNameLabel.leadingAnchor.constraint(equalTo: outerScrollView.leadingAnchor, constant: 10),
+            productNameLabel.topAnchor.constraint(equalTo: imageNumberLabel.bottomAnchor, constant: 20),
+            stockLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10),
+            stockLabel.topAnchor.constraint(equalTo: imageNumberLabel.bottomAnchor, constant: 20),
+            priceLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10),
             priceLabel.topAnchor.constraint(equalTo: stockLabel.bottomAnchor, constant: 10),
-            discountedPriceLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            discountedPriceLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10),
             discountedPriceLabel.topAnchor.constraint(equalTo: priceLabel.bottomAnchor, constant: 10),
-            descriptionLabel.leadingAnchor.constraint(equalTo: outerScrollView.leadingAnchor),
-            descriptionLabel.trailingAnchor.constraint(equalTo: outerScrollView.trailingAnchor),
+            descriptionLabel.leadingAnchor.constraint(equalTo: outerScrollView.leadingAnchor, constant: 10),
+            descriptionLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10),
             descriptionLabel.topAnchor.constraint(equalTo: discountedPriceLabel.bottomAnchor, constant: 10),
             descriptionLabel.bottomAnchor.constraint(equalTo: outerScrollView.bottomAnchor)
         ])
@@ -150,8 +148,11 @@ final class ProductDetailViewController: UIViewController {
         imageNumberLabel.text = "1 / \(product.images.count)"
         productNameLabel.text = product.name
         stockLabel.text = String(product.stock)
-        priceLabel.text = String(product.price)
-        discountedPriceLabel.text = String(product.discountedPrice)
+        priceLabel.attributedText = NSAttributedString(
+            string: "\(product.currency) \(Int(product.price))",
+            attributes: [NSAttributedString.Key.strikethroughStyle: NSUnderlineStyle.single.rawValue]
+        )
+        discountedPriceLabel.text = "\(product.currency) \(Int(product.discountedPrice))"
         descriptionLabel.text = product.description
     }
 }
