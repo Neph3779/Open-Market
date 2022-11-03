@@ -20,101 +20,114 @@ class SessionManager: SessionManagerProtocol {
     }
 
     func healthCheck(completionHandler: @escaping (Result<Data, OpenMarketError>) -> Void) {
-        do {
+        let task = { [weak self] in
+            guard let self = self else { return }
+            
             let url = try RequestURLPath.healthCheck()
-            let request = headerConfiguredRequest(method: .get, url: url)
-            dataTask(request: request, completionHandler: completionHandler).resume()
-        } catch let error as OpenMarketError {
-            completionHandler(.failure(error))
-        } catch {
-            completionHandler(.failure(.unknownError))
+            let request = self.request(method: .get, url: url)
+
+            self.dataTask(request: request, completionHandler: completionHandler).resume()
         }
+
+        handleRequestTask(requestTask: task, completionHandler: completionHandler)
     }
 
     func getProductList(pageNumber: Int,
                         itemsPerPage: Int = 100,
                         completionHandler: @escaping (Result<Data, OpenMarketError>) -> Void) {
-        do {
+        let task = { [weak self] in
+            guard let self = self else { return }
+
             let url = try RequestURLPath.getProductList(pageNumber: pageNumber, itemsPerPage: itemsPerPage)
-            let request = headerConfiguredRequest(method: .get, url: url)
-            dataTask(request: request, completionHandler: completionHandler).resume()
-        } catch let error as OpenMarketError {
-            completionHandler(.failure(error))
-        } catch {
-            completionHandler(.failure(.unknownError))
+            let request = self.request(method: .get, url: url)
+
+            self.dataTask(request: request, completionHandler: completionHandler).resume()
         }
+
+        handleRequestTask(requestTask: task, completionHandler: completionHandler)
     }
 
     func getProductDetail(productId: Int,
                           completionHandler: @escaping (Result<Data, OpenMarketError>) -> Void) {
-        do {
+        let task = { [weak self] in
+            guard let self = self else { return }
+
             let url = try RequestURLPath.getProductDetail(productId: productId)
-            let request = headerConfiguredRequest(method: .get, url: url)
-            dataTask(request: request, completionHandler: completionHandler).resume()
-        } catch let error as OpenMarketError {
-            completionHandler(.failure(error))
-        } catch {
-            completionHandler(.failure(.unknownError))
+            let request = self.request(method: .get, url: url)
+
+            self.dataTask(request: request, completionHandler: completionHandler).resume()
         }
+
+        handleRequestTask(requestTask: task, completionHandler: completionHandler)
     }
 
     func postProduct(data: PostRequest,
                      completionHandler: @escaping (Result<Data, OpenMarketError>) -> Void) {
-        do {
+        let task = { [weak self] in
+            guard let self = self else { return }
+
             let url = try RequestURLPath.postProduct()
-            var request = headerConfiguredRequest(method: .post, url: url)
-            request.setValue(identifier, forHTTPHeaderField: "identifier")
-            request = try requestWithBody(request: request, method: .post, data: data)
-            dataTask(request: request, completionHandler: completionHandler).resume()
-        } catch let error as OpenMarketError {
-            completionHandler(.failure(error))
-        } catch {
-            completionHandler(.failure(.unknownError))
+            var request = self.request(method: .post, url: url)
+            request.setValue(self.identifier, forHTTPHeaderField: "identifier")
+            request.setValue("multipart/form-data; boundary=\"\(RequestBodyEncoder.boundary)\"",
+                             forHTTPHeaderField: "Content-Type")
+            request = try self.requestWithBody(request: request, method: .post, data: data)
+
+            self.dataTask(request: request, completionHandler: completionHandler).resume()
         }
+
+        handleRequestTask(requestTask: task, completionHandler: completionHandler)
     }
 
     func checkDeleteURI(productId: Int,
                         secret: String,
                         completionHandler: @escaping (Result<Data, OpenMarketError>) -> Void) {
-        do {
+        let task = { [weak self] in
+            guard let self = self else { return }
+
             let url = try RequestURLPath.checkDeleteURI(productId: productId)
             let deleteURIRequest = DeleteURIRequest(secret: secret)
-            var request = URLRequest(url: url)
-            request.httpMethod = HTTPMethod.post.rawValue
+            var request = self.request(method: .post, url: url)
             request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-            request.addValue(identifier, forHTTPHeaderField: "identifier")
-            request = try requestWithBody(request: request, method: .post, data: deleteURIRequest)
+            request.addValue(self.identifier, forHTTPHeaderField: "identifier")
+            request = try self.requestWithBody(request: request, method: .post, data: deleteURIRequest)
 
-            dataTask(request: request, completionHandler: completionHandler).resume()
-        } catch let error as OpenMarketError {
-            completionHandler(.failure(error))
-        } catch {
-            completionHandler(.failure(.unknownError))
+            self.dataTask(request: request, completionHandler: completionHandler).resume()
         }
+
+        handleRequestTask(requestTask: task, completionHandler: completionHandler)
     }
 
     func modifyProduct(productId: Int,
                        completionHandler: @escaping (Result<Data, OpenMarketError>) -> Void) {
-        do {
+        let task = { [weak self] in
+            guard let self = self else { return }
             let url = try RequestURLPath.modifyProduct(productId: productId)
-            let request = headerConfiguredRequest(method: .patch, url: url)
+            let request = self.request(method: .patch, url: url)
             /* http body 구성 작업*/
-            dataTask(request: request, completionHandler: completionHandler).resume()
-        } catch let error as OpenMarketError {
-            completionHandler(.failure(error))
-        } catch {
-            completionHandler(.failure(.unknownError))
+            self.dataTask(request: request, completionHandler: completionHandler).resume()
         }
+
+        handleRequestTask(requestTask: task, completionHandler: completionHandler)
     }
 
     func deleteProduct(deleteURI: String,
                        completionHandler: @escaping (Result<Data, OpenMarketError>) -> Void) {
-        do {
+        let task = { [weak self] in
+            guard let self = self else { return }
             let url = try RequestURLPath.deleteProduct(deleteURI: deleteURI)
-            var request = headerConfiguredRequest(method: .delete, url: url)
-            request.httpMethod = HTTPMethod.delete.rawValue
-            request.addValue(identifier, forHTTPHeaderField: "identifier")
-            dataTask(request: request, completionHandler: completionHandler).resume()
+            var request = self.request(method: .delete, url: url)
+            request.addValue(self.identifier, forHTTPHeaderField: "identifier")
+            self.dataTask(request: request, completionHandler: completionHandler).resume()
+        }
+
+        handleRequestTask(requestTask: task, completionHandler: completionHandler)
+    }
+
+    private func handleRequestTask(requestTask: () throws -> Void,
+                                   completionHandler: @escaping (Result<Data, OpenMarketError>) -> Void) {
+        do {
+            try requestTask()
         } catch let error as OpenMarketError {
             completionHandler(.failure(error))
         } catch {
@@ -160,10 +173,9 @@ class SessionManager: SessionManagerProtocol {
         return request
     }
 
-    private func headerConfiguredRequest(method: HTTPMethod, url: URL) -> URLRequest {
+    private func request(method: HTTPMethod, url: URL) -> URLRequest {
         var request = URLRequest(url: url)
         request.httpMethod = method.rawValue
-        request.setValue(method.mimeType, forHTTPHeaderField: "Content-Type")
         return request
     }
 
