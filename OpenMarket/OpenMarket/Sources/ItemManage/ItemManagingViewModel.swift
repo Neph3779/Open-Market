@@ -16,6 +16,7 @@ final class ItemManagingViewModel {
     let itemManageAPI = ItemManageAPI()
     var pickedImages = [PickedImage]()
     var manageMode: ManageMode = .register
+    var product: DetailItem?
 }
 
 // MARK: Enums

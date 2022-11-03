@@ -100,21 +100,18 @@ final class ItemManagingViewController: UIViewController {
     private lazy var itemStockTextField: UITextField = {
         let textField = UITextField()
         textField.translatesAutoresizingMaskIntoConstraints = false
-        textField.delegate = self
         textField.keyboardType = .numberPad
         textField.placeholder = ItemManagingViewModel.Style.itemStockPlaceholder
         return textField
     }()
 
-    private lazy var itemDescriptionTextView: UITextView = {
-        let textView = UITextView()
-        textView.isEditable = true
-        textView.delegate = self
-        textView.isScrollEnabled = false
-        textView.font = UIFont.preferredFont(forTextStyle: .body)
-        textView.text = ItemManagingViewModel.Style.itemDescriptionPlaceholder
-        textView.textColor = .lightGray
-        return textView
+    private lazy var itemDescriptionTextField: UITextField = {
+        let textField = UITextField()
+        textField.translatesAutoresizingMaskIntoConstraints = false
+        textField.font = UIFont.preferredFont(forTextStyle: .body)
+        textField.placeholder = ItemManagingViewModel.Style.itemDescriptionPlaceholder
+        textField.contentVerticalAlignment = .top
+        return textField
     }()
 
     private let passwordTextField: UITextField = {
@@ -125,9 +122,10 @@ final class ItemManagingViewController: UIViewController {
         return textField
     }()
 
-    init(mode: ItemManagingViewModel.ManageMode) {
+    init(mode: ItemManagingViewModel.ManageMode, product: DetailItem? = nil) {
         super.init(nibName: nil, bundle: nil)
         viewModel.manageMode = mode
+        viewModel.product = product
     }
 
     required init?(coder: NSCoder) {
@@ -136,14 +134,24 @@ final class ItemManagingViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.addSubview(outerScrollView)
+        setContents()
         setItemManagingView()
         setOuterScrollView()
         setOuterStackView()
         setImageSelectStackView()
         setPriceView()
-        setItemDescriptionTextView()
+        setItemDescriptionTextField()
         setDivisionLine()
+    }
+
+    private func setContents() {
+        if let product = viewModel.product {
+            itemTitleTextField.text = product.name
+            itemPriceTextField.text = product.price.description
+            itemDiscountedPriceTextField.text = product.discountedPrice.description
+            itemStockTextField.text = product.stock.description
+            itemDescriptionTextField.text = product.description
+        }
     }
 
     private func setItemManagingView() {
@@ -153,7 +161,7 @@ final class ItemManagingViewController: UIViewController {
     }
 
     private func setOuterScrollView() {
-        outerScrollView.addSubview(outerStackView)
+        view.addSubview(outerScrollView)
         NSLayoutConstraint.activate([
             outerScrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             outerScrollView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
@@ -163,12 +171,15 @@ final class ItemManagingViewController: UIViewController {
     }
 
     private func setOuterStackView() {
-        outerStackView.addArrangedSubview(imageSelectStackView)
+        outerScrollView.addSubview(outerStackView)
+        if viewModel.manageMode == .register {
+            outerStackView.addArrangedSubview(imageSelectStackView)
+        }
         outerStackView.addArrangedSubview(itemTitleTextField)
         outerStackView.addArrangedSubview(priceView)
         outerStackView.addArrangedSubview(itemStockTextField)
         outerStackView.addArrangedSubview(passwordTextField)
-        outerStackView.addArrangedSubview(itemDescriptionTextView)
+        outerStackView.addArrangedSubview(itemDescriptionTextField)
         NSLayoutConstraint.activate([
             outerStackView.topAnchor.constraint(equalTo: outerScrollView.topAnchor),
             outerStackView.leadingAnchor.constraint(equalTo: outerScrollView.leadingAnchor),
@@ -221,8 +232,9 @@ final class ItemManagingViewController: UIViewController {
         ])
     }
 
-    private func setItemDescriptionTextView() {
-        itemDescriptionTextView.heightAnchor
+    private func setItemDescriptionTextField() {
+        itemDescriptionTextField.delegate = self
+        itemDescriptionTextField.heightAnchor
             .constraint(equalTo: view.heightAnchor,
                         multiplier: ItemManagingViewModel.Style.descriptionViewProportion).isActive = true
     }
@@ -237,7 +249,7 @@ final class ItemManagingViewController: UIViewController {
 
     @objc private func registerItem() {
         guard let title = itemTitleTextField.text,
-              let description = itemDescriptionTextView.text,
+              let description = itemDescriptionTextField.text,
               let priceText = itemPriceTextField.text,
               let price = Int(priceText),
               let discountedPriceText = itemDiscountedPriceTextField.text,
@@ -349,9 +361,13 @@ extension ItemManagingViewController: PHPickerViewControllerDelegate {
 // MARK: TextFieldDelegate
 extension ItemManagingViewController: UITextFieldDelegate {
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        let allowedCharacters = CharacterSet.decimalDigits
-        let characterSet = CharacterSet(charactersIn: string)
-        return allowedCharacters.isSuperset(of: characterSet)
+        if textField != itemDescriptionTextField {
+            let allowedCharacters = CharacterSet.decimalDigits
+            let characterSet = CharacterSet(charactersIn: string)
+            return allowedCharacters.isSuperset(of: characterSet)
+        } else {
+            return true
+        }
     }
 }
 

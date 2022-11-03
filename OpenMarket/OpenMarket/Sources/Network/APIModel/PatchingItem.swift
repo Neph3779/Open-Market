@@ -7,24 +7,28 @@
 
 import Foundation
 
-struct PatchingItem: FormData {
-    let title: String?
+struct PatchingItem: Encodable {
+    let identifier: String
+    let productId: Int
+    let name: String?
     let descriptions: String?
-    let price: Int?
+    let thumbnailId: Int?
+    let price: Double?
     let currency: String?
+    let discountedPrice: Double?
     let stock: Int?
-    let discountedPrice: Int?
-    let images: [Data]?
-    let password: String
+    let secret: String
 
-    let codingKeys: [String: String] = [
-        "title": "title",
-        "descriptions": "descriptions",
-        "price": "price",
-        "currency": "currency",
-        "stock": "stock",
-        "discountedPrice": "discounted_price",
-        "images": "images[]",
-        "password": "password"
-    ]
+    private enum CodingKeys: String, CodingKey {
+        case identifier
+        case productId = "product_id"
+        case name
+        case descriptions
+        case thumbnailId = "thumbnail_id"
+        case price
+        case currency
+        case discountedPrice = "discounted_price"
+        case stock
+        case secret
+    }
 }
