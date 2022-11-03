@@ -17,6 +17,16 @@ final class ItemManagingViewModel {
     var pickedImages = [PickedImage]()
     var manageMode: ManageMode = .register
     var product: DetailItem?
+
+    func postItem(postRequest: PostRequest, completionHandler: @escaping (Result<Void, OpenMarketError>) -> Void ) {
+        itemManageAPI.postItem(data: postRequest, completionHandler: completionHandler)
+    }
+
+    func patchItem(patchingItem: PatchingItem, completionHandler: @escaping (Result<Void, OpenMarketError>) -> Void) {
+        guard let productId = product?.id else { return }
+
+        itemManageAPI.patchItem(productId: productId, data: patchingItem, completionHandler: completionHandler)
+    }
 }
 
 // MARK: Enums

@@ -14,15 +14,22 @@ final class ItemManageAPI {
         self.sessionManager = sessionManager
     }
 
-    func postItem(data: PostRequest, completionHandler: @escaping (Result<MarketItem, OpenMarketError>) -> Void) {
+    func postItem(data: PostRequest, completionHandler: @escaping (Result<Void, OpenMarketError>) -> Void) {
         sessionManager.postProduct(data: data) { result in
             switch result {
-            case .success(let data):
-                guard let decodedData = try? JSONDecoder().decode(MarketItem.self, from: data) else {
-                    completionHandler(.failure(.invalidData))
-                    return
-                }
-                completionHandler(.success(decodedData))
+            case .success:
+                completionHandler(.success(()))
+            case .failure(let error):
+                completionHandler(.failure(error))
+            }
+        }
+    }
+
+    func patchItem(productId: Int, data: PatchingItem, completionHandler: @escaping (Result<Void, OpenMarketError>) -> Void) {
+        sessionManager.modifyProduct(productId: productId, patchingItem: data) { result in
+            switch result {
+            case .success:
+                completionHandler(.success(()))
             case .failure(let error):
                 completionHandler(.failure(error))
             }

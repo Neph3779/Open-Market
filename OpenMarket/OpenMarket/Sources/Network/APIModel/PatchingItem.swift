@@ -8,8 +8,6 @@
 import Foundation
 
 struct PatchingItem: Encodable {
-    let identifier: String
-    let productId: Int
     let name: String?
     let descriptions: String?
     let thumbnailId: Int?
@@ -20,8 +18,6 @@ struct PatchingItem: Encodable {
     let secret: String
 
     private enum CodingKeys: String, CodingKey {
-        case identifier
-        case productId = "product_id"
         case name
         case descriptions
         case thumbnailId = "thumbnail_id"

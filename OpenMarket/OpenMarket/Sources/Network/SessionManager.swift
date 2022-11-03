@@ -99,12 +99,15 @@ class SessionManager: SessionManagerProtocol {
     }
 
     func modifyProduct(productId: Int,
+                       patchingItem: PatchingItem,
                        completionHandler: @escaping (Result<Data, OpenMarketError>) -> Void) {
         let task = { [weak self] in
             guard let self = self else { return }
             let url = try RequestURLPath.modifyProduct(productId: productId)
-            let request = self.request(method: .patch, url: url)
-            /* http body 구성 작업*/
+            var request = self.request(method: .patch, url: url)
+            request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+            request.addValue(self.identifier, forHTTPHeaderField: "identifier")
+            request.httpBody = try self.requestBodyEncoder.encodePatchRequest(patchRequest: patchingItem)
             self.dataTask(request: request, completionHandler: completionHandler).resume()
         }
 

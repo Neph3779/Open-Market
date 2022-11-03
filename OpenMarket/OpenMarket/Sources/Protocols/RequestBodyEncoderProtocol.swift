@@ -10,5 +10,6 @@ import Foundation
 protocol RequestBodyEncoderProtocol {
     static var boundary: String { get }
     func encodePostRequest(postRequest: PostRequest) throws -> Data
+    func encodePatchRequest(patchRequest: PatchingItem) throws -> Data
     func encodeDeleteURIRequest(deleteURIRequest: DeleteURIRequest) throws -> Data
 }

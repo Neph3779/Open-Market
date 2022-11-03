@@ -21,6 +21,7 @@ protocol SessionManagerProtocol {
                         secret: String,
                         completionHandler: @escaping (Result<Data, OpenMarketError>) -> Void)
     func modifyProduct(productId: Int,
+                       patchingItem: PatchingItem,
                        completionHandler: @escaping (Result<Data, OpenMarketError>) -> Void)
     func deleteProduct(deleteURI: String,
                        completionHandler: @escaping (Result<Data, OpenMarketError>) -> Void)

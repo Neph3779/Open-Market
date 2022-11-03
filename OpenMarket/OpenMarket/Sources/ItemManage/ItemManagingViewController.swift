@@ -251,21 +251,28 @@ final class ItemManagingViewController: UIViewController {
         guard let title = itemTitleTextField.text,
               let description = itemDescriptionTextField.text,
               let priceText = itemPriceTextField.text,
-              let price = Int(priceText),
+              let price = Double(priceText),
               let discountedPriceText = itemDiscountedPriceTextField.text,
-              let discountedPrice = Int(discountedPriceText),
+              let discountedPrice = Double(discountedPriceText),
               let currency = itemCurrencyLabel.text,
               let stockText = itemStockTextField.text,
               let stock = Int(stockText),
               let password = passwordTextField.text else {
             return
         }
-        let postingItem = PostRequest(
-            parameter: PostRequest.Parameter(name: title, description: description, price: Double(price),
-                                              currency: currency, stock: stock,
-                                              discountedPrice: Double(discountedPrice), secret: password),
-            images: postImages())
-        viewModel.itemManageAPI.postItem(data: postingItem, completionHandler: postCompletionHandler(result:))
+        if viewModel.manageMode == .register {
+            let postingItem = PostRequest(
+                parameter: PostRequest.Parameter(name: title, description: description, price: Double(price),
+                                                  currency: currency, stock: stock,
+                                                  discountedPrice: Double(discountedPrice), secret: password),
+                images: postImages())
+            viewModel.postItem(postRequest: postingItem, completionHandler: requestCompletionHandler(result:))
+        } else if viewModel.manageMode == .modify {
+            let patchingItem = PatchingItem(name: title, descriptions: description,
+                                            thumbnailId: nil, price: price, currency: currency,
+                                            discountedPrice: discountedPrice, stock: stock, secret: password)
+            viewModel.patchItem(patchingItem: patchingItem, completionHandler: requestCompletionHandler(result:))
+        }
 
         navigationController?.popViewController(animated: true)
     }
@@ -280,7 +287,7 @@ final class ItemManagingViewController: UIViewController {
         return postingImages
     }
 
-    private func postCompletionHandler(result: Result<MarketItem, OpenMarketError>) {
+    private func requestCompletionHandler(result: Result<Void, OpenMarketError>) {
         switch result {
         case .success:
             break

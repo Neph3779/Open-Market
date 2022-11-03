@@ -34,6 +34,14 @@ struct RequestBodyEncoder: RequestBodyEncoderProtocol {
         return requestData
     }
 
+    func encodePatchRequest(patchRequest: PatchingItem) throws -> Data {
+        guard let data = try? JSONEncoder().encode(patchRequest) else {
+            throw OpenMarketError.bodyEncodingError
+        }
+
+        return data
+    }
+
     func encodeDeleteURIRequest(deleteURIRequest: DeleteURIRequest) throws -> Data {
         guard let data = try? JSONEncoder().encode(deleteURIRequest) else {
             throw OpenMarketError.bodyEncodingError
