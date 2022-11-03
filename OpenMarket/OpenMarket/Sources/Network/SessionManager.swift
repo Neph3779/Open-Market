@@ -22,7 +22,7 @@ class SessionManager: SessionManagerProtocol {
     func healthCheck(completionHandler: @escaping (Result<Data, OpenMarketError>) -> Void) {
         let task = { [weak self] in
             guard let self = self else { return }
-            
+
             let url = try RequestURLPath.healthCheck()
             let request = self.request(method: .get, url: url)
 
@@ -71,7 +71,7 @@ class SessionManager: SessionManagerProtocol {
             request.setValue(self.identifier, forHTTPHeaderField: "identifier")
             request.setValue("multipart/form-data; boundary=\"\(RequestBodyEncoder.boundary)\"",
                              forHTTPHeaderField: "Content-Type")
-            request = try self.requestWithBody(request: request, method: .post, data: data)
+            request.httpBody = try self.requestBodyEncoder.encodePostRequest(postRequest: data)
 
             self.dataTask(request: request, completionHandler: completionHandler).resume()
         }
@@ -90,7 +90,7 @@ class SessionManager: SessionManagerProtocol {
             var request = self.request(method: .post, url: url)
             request.addValue("application/json", forHTTPHeaderField: "Content-Type")
             request.addValue(self.identifier, forHTTPHeaderField: "identifier")
-            request = try self.requestWithBody(request: request, method: .post, data: deleteURIRequest)
+            request.httpBody = try self.requestBodyEncoder.encodeDeleteURIRequest(deleteURIRequest: deleteURIRequest)
 
             self.dataTask(request: request, completionHandler: completionHandler).resume()
         }
@@ -143,34 +143,6 @@ class SessionManager: SessionManagerProtocol {
         }
 
         dataTask(request: URLRequest(url: url), completionHandler: completionHandler).resume()
-    }
-
-    private func requestWithBody<APIModel: RequestData>(request: URLRequest,
-                                                        method: HTTPMethod,
-                                                        data: APIModel) throws -> URLRequest {
-        // TODO: 이 부분 리팩토링 필요
-        var request = request
-        switch method {
-        case .get:
-            throw OpenMarketError.requestGETWithData
-        case .post:
-            if let postRequest = data as? PostRequest {
-                request.httpBody = try requestBodyEncoder.encodePostRequest(postRequest: postRequest)
-                break
-            }
-            if let deleteURIRequest = data as? DeleteURIRequest {
-                request.httpBody = try requestBodyEncoder.encodeDeleteURIRequest(deleteURIRequest: deleteURIRequest)
-                break
-            }
-            throw OpenMarketError.requestDataTypeNotMatch
-        case .patch:
-            if data is PatchingItem { break }
-            throw OpenMarketError.requestDataTypeNotMatch
-        case .delete:
-            throw OpenMarketError.requestDataTypeNotMatch
-        }
-
-        return request
     }
 
     private func request(method: HTTPMethod, url: URL) -> URLRequest {
