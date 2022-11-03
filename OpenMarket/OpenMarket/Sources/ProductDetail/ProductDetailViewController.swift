@@ -108,16 +108,19 @@ final class ProductDetailViewController: UIViewController {
         let deleteAction = UIAlertAction(title: "삭제", style: .destructive) { _ in
             let alert = UIAlertController(title: nil, message: "비밀번호를 입력하세요", preferredStyle: .alert)
             alert.addTextField { textField in
-                textField.textContentType = .password
+                textField.isSecureTextEntry = true
             }
             alert.addAction(.init(title: "확인", style: .default, handler: { [weak self] _ in
                 guard let self = self,
                       let text = alert.textFields?.first?.text else { return }
-//                self.viewModel.deleteProduct(secret: text)
-                self.viewModel.deleteProduct(secret: "n62jxcvawe1ji3p3")
+                self.viewModel.deleteProduct(secret: text) {
+                    DispatchQueue.main.async {
+                        self.navigationController?.popViewController(animated: true)
+                    }
+                }
             }))
+            alert.addAction(.init(title: "취소", style: .cancel))
             self.present(alert, animated: true)
-            // delete
         }
         let cancelAction = UIAlertAction(title: "취소", style: .cancel)
         [modifyAction, deleteAction, cancelAction].forEach { actionSheet.addAction($0) }
@@ -213,6 +216,7 @@ extension ProductDetailViewController: UICollectionViewDelegateFlowLayout {
     }
 }
 
+// MARK: Carousel Effect
 extension ProductDetailViewController: UIScrollViewDelegate {
     func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
         let cellWidthIncludeSpacing = imageCollectionView.frame.width

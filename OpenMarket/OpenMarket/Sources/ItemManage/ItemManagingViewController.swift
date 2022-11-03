@@ -234,69 +234,8 @@ final class ItemManagingViewController: UIViewController {
             outerStackView.insertArrangedSubview(UIView.divisionLine, at: 2 * index  + 1)
         }
     }
-}
 
-extension ItemManagingViewController: PHPickerViewControllerDelegate {
-    func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
-        let items = results.map(\.itemProvider)
-        let lastItemIndex = items.count - 1
-        let dispatchGroup = DispatchGroup()
-
-        if items.isEmpty {
-            dismiss(animated: true, completion: nil)
-            return
-        }
-
-        dispatchGroup.enter()
-        for index in 0...lastItemIndex {
-            items[index].loadObject(ofClass: UIImage.self) { [weak self] (image, _) in
-                guard let self = self else { return }
-                if let name = items[index].suggestedName,
-                   let image = image as? UIImage,
-                   let data = image.pngData(),
-                   data.count / 1000 < 300 {
-                    self.viewModel.pickedImages.append(.init(name: name, image: image, data: data))
-                }
-
-                if index == lastItemIndex {
-                    dispatchGroup.leave()
-                }
-            }
-        }
-
-        dispatchGroup.notify(queue: DispatchQueue.global()) {
-            let didErrorOccurred = items.count != self.viewModel.pickedImages.count
-            self.pickerCompletion(didErrorOccurred: didErrorOccurred)
-            // FIXME: 이미 이미지 선택된 상태에서 또 다른거 선택하면 에러얼럿뜸
-            // FIXME: 난잡한 메서드들 위치, 구조 관련 정리 필요
-        }
-    }
-
-    private func pickerCompletion(didErrorOccurred: Bool) {
-        DispatchQueue.main.async {
-            for index in 0..<self.viewModel.pickedImages.count {
-                self.itemImageViews[index].image = self.viewModel.pickedImages[index].image
-            }
-
-            didErrorOccurred ? self.dismiss(animated: true, completion: self.presentOverSizeError) : self.dismiss(animated: true, completion: nil)
-        }
-    }
-
-    private func presentOverSizeError() {
-        let alert = UIAlertController(title: "선택한 이미지 중 업로드 할 수 없는 이미지가 포함되어있어요",
-                                      message: "이미지의 크기는 300Kb 이하여야 합니다🥲",
-                                      preferredStyle: .alert)
-
-        let yesAction = UIAlertAction(title: "확인", style: .cancel) { _ in  self.dismiss(animated: true, completion: nil) }
-        alert.addAction(yesAction)
-        present(alert, animated: true, completion: nil)
-    }
-}
-
-// MARK: - Functions
-
-extension ItemManagingViewController {
-    @objc func registerItem() {
+    @objc private func registerItem() {
         guard let title = itemTitleTextField.text,
               let description = itemDescriptionTextView.text,
               let priceText = itemPriceTextField.text,
@@ -331,8 +270,8 @@ extension ItemManagingViewController {
 
     private func postCompletionHandler(result: Result<MarketItem, OpenMarketError>) {
         switch result {
-        case .success(let item):
-            print(item.id)
+        case .success:
+            break
         case .failure(let error):
             showErrorAlert(error: error)
         }
@@ -348,8 +287,64 @@ extension ItemManagingViewController {
     }
 }
 
-// MARK: - Delegates
+// MARK: PHPickerDelegate
+extension ItemManagingViewController: PHPickerViewControllerDelegate {
+    func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
+        let items = results.map(\.itemProvider)
+        let lastItemIndex = items.count - 1
+        let dispatchGroup = DispatchGroup()
 
+        if items.isEmpty {
+            dismiss(animated: true, completion: nil)
+            return
+        }
+
+        dispatchGroup.enter()
+        for index in 0...lastItemIndex {
+            items[index].loadObject(ofClass: UIImage.self) { [weak self] (image, _) in
+                guard let self = self else { return }
+                if let name = items[index].suggestedName,
+                   let image = image as? UIImage,
+                   let data = image.pngData(),
+                   data.count / 1000 < 300 {
+                    self.viewModel.pickedImages.append(.init(name: name, image: image, data: data))
+                }
+
+                if index == lastItemIndex {
+                    dispatchGroup.leave()
+                }
+            }
+        }
+
+        dispatchGroup.notify(queue: DispatchQueue.global()) {
+            let didErrorOccurred = items.count != self.viewModel.pickedImages.count
+            self.pickerCompletion(didErrorOccurred: didErrorOccurred)
+            // FIXME: 이미 이미지 선택된 상태에서 또 다른거 선택하면 에러얼럿뜸
+        }
+    }
+
+    private func pickerCompletion(didErrorOccurred: Bool) {
+        DispatchQueue.main.async {
+            for index in 0..<self.viewModel.pickedImages.count {
+                self.itemImageViews[index].image = self.viewModel.pickedImages[index].image
+            }
+
+            didErrorOccurred ? self.dismiss(animated: true, completion: self.presentOverSizeError) : self.dismiss(animated: true, completion: nil)
+        }
+    }
+
+    private func presentOverSizeError() {
+        let alert = UIAlertController(title: "선택한 이미지 중 업로드 할 수 없는 이미지가 포함되어있어요",
+                                      message: "이미지의 크기는 300Kb 이하여야 합니다🥲",
+                                      preferredStyle: .alert)
+
+        let yesAction = UIAlertAction(title: "확인", style: .cancel) { _ in  self.dismiss(animated: true, completion: nil) }
+        alert.addAction(yesAction)
+        present(alert, animated: true, completion: nil)
+    }
+}
+
+// MARK: TextFieldDelegate
 extension ItemManagingViewController: UITextFieldDelegate {
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         let allowedCharacters = CharacterSet.decimalDigits
@@ -358,6 +353,7 @@ extension ItemManagingViewController: UITextFieldDelegate {
     }
 }
 
+// MARK: TextViewDelegate
 extension ItemManagingViewController: UITextViewDelegate {
     func textViewDidBeginEditing(_ textView: UITextView) {
         if textView.textColor == UIColor.lightGray {

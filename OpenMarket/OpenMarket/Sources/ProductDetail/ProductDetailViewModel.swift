@@ -79,11 +79,11 @@ final class ProductDetailViewModel {
         }
     }
 
-    func deleteProduct(secret: String) {
+    func deleteProduct(secret: String, completionHandler: @escaping () -> Void) {
         productDetailAPI.deleteProduct(productId: productId, secret: secret) { [weak self] result in
             switch result {
             case .success:
-                break
+                completionHandler()
             case .failure(let error):
                 guard let self = self,
                       let showErrorAlert = self.showErrorAlert else { return }
