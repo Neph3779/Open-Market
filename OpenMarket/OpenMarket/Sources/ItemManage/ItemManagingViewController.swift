@@ -290,7 +290,7 @@ final class ItemManagingViewController: UIViewController {
 // MARK: PHPickerDelegate
 extension ItemManagingViewController: PHPickerViewControllerDelegate {
     func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
-        let items = results.map(\.itemProvider)
+        let items = results.map { $0.itemProvider }
         let lastItemIndex = items.count - 1
         let dispatchGroup = DispatchGroup()
 
@@ -298,6 +298,8 @@ extension ItemManagingViewController: PHPickerViewControllerDelegate {
             dismiss(animated: true, completion: nil)
             return
         }
+
+        viewModel.pickedImages.removeAll()
 
         dispatchGroup.enter()
         for index in 0...lastItemIndex {
@@ -319,12 +321,12 @@ extension ItemManagingViewController: PHPickerViewControllerDelegate {
         dispatchGroup.notify(queue: DispatchQueue.global()) {
             let didErrorOccurred = items.count != self.viewModel.pickedImages.count
             self.pickerCompletion(didErrorOccurred: didErrorOccurred)
-            // FIXME: 이미 이미지 선택된 상태에서 또 다른거 선택하면 에러얼럿뜸
         }
     }
 
     private func pickerCompletion(didErrorOccurred: Bool) {
         DispatchQueue.main.async {
+            self.itemImageViews.forEach { $0.image = nil }
             for index in 0..<self.viewModel.pickedImages.count {
                 self.itemImageViews[index].image = self.viewModel.pickedImages[index].image
             }
