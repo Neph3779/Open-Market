@@ -36,11 +36,19 @@ class MarketItemsViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        bind()
         addSubviews()
         configureCollectionView()
         configureLoadingIndicator()
         configureNavigationItems()
-        fetchPageData()
+        fetchFirstPageData()
+    }
+
+    private func bind() {
+        viewModel.reloadData = collectionView.reloadData
+        viewModel.showErrorAlert = showErrorAlert(error: )
+        viewModel.insertItems = collectionView.insertItems(at:)
+        viewModel.stopLoadingIndicator = loadingIndicator.stopAnimating
     }
 
     private func addSubviews() {
@@ -77,31 +85,8 @@ class MarketItemsViewController: UIViewController {
         navigationItem.rightBarButtonItem = registerItemButton
     }
 
-    private func fetchPageData() { // FIXME: refresh, 추가 페이지 로드를 구분해야함
-        viewModel.marketItemsAPI.getPage(id: viewModel.lastPageId + 1,
-                                         completionHandler: fetchPageDataCompletionHandler)
-    }
-
-    private func fetchPageDataCompletionHandler(_ result: Result<MarketPage, OpenMarketError>) {
-        switch result {
-        case .success(let page):
-            if page.pages.isEmpty { return }
-
-            let rangeToInsert = viewModel.marketItems.count ..< viewModel.marketItems.count + page.pages.count
-            viewModel.marketItems.append(contentsOf: page.pages)
-            viewModel.lastPageId = page.pageNo
-            viewModel.hasNextPage = page.hasNext
-
-            DispatchQueue.main.async {
-                self.collectionView.insertItems(at: rangeToInsert.map { IndexPath(item: $0, section: 0) })
-                self.loadingIndicator.stopAnimating()
-            }
-        case .failure(let error):
-            DispatchQueue.main.async {
-                self.present(UIAlertController(title: error.name, message: error.description, preferredStyle: .alert),
-                             animated: true, completion: nil)
-            }
-        }
+    private func fetchFirstPageData() {
+        viewModel.refreshPageData()
     }
 
     private func getCellWidth(numberOfcolumns: Int, inset: CGFloat) -> CGFloat {
@@ -147,7 +132,7 @@ extension MarketItemsViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         if indexPath.item == viewModel.marketItems.count - Style.numberOfCellsToTriggerFetch
             && viewModel.hasNextPage {
-            fetchPageData()
+            viewModel.fetchNextPageData()
         }
 
         switch viewModel.layoutMode {
