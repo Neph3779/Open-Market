@@ -72,12 +72,12 @@ final class ProductDetailAPI {
     }
 
     private func askDeleteURI(productId: Int, secret: String, completionHandler: @escaping (Result<String, OpenMarketError>) -> Void) {
-        sessionManager.checkDeleteURI(productId: productId) { result in
+        sessionManager.checkDeleteURI(productId: productId, secret: secret) { result in
             switch result {
-            case .success(let jsonData):
-                if let json = try? JSONSerialization.jsonObject(with: jsonData, options: []) as? [String: Any],
-                let uri = json["uri"] as? String {
-                    completionHandler(.success(uri))
+            case .success(let data):
+                if let uri = String(data: data, encoding: .utf8)?.split(separator: "/").last {
+                    print(uri)
+                    completionHandler(.success(String(uri)))
                 }
             case .failure(let error):
                 completionHandler(.failure(error))

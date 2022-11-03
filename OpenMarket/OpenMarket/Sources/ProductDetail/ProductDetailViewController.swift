@@ -106,6 +106,17 @@ final class ProductDetailViewController: UIViewController {
             self.navigationController?.pushViewController(ItemManagingViewController(mode: .modify), animated: true)
         }
         let deleteAction = UIAlertAction(title: "삭제", style: .destructive) { _ in
+            let alert = UIAlertController(title: nil, message: "비밀번호를 입력하세요", preferredStyle: .alert)
+            alert.addTextField { textField in
+                textField.textContentType = .password
+            }
+            alert.addAction(.init(title: "확인", style: .default, handler: { [weak self] _ in
+                guard let self = self,
+                      let text = alert.textFields?.first?.text else { return }
+//                self.viewModel.deleteProduct(secret: text)
+                self.viewModel.deleteProduct(secret: "n62jxcvawe1ji3p3")
+            }))
+            self.present(alert, animated: true)
             // delete
         }
         let cancelAction = UIAlertAction(title: "취소", style: .cancel)

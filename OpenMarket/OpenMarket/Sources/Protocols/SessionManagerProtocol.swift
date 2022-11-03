@@ -18,6 +18,7 @@ protocol SessionManagerProtocol {
     func postProduct(data: PostRequest,
                      completionHandler: @escaping (Result<Data, OpenMarketError>) -> Void)
     func checkDeleteURI(productId: Int,
+                        secret: String,
                         completionHandler: @escaping (Result<Data, OpenMarketError>) -> Void)
     func modifyProduct(productId: Int,
                        completionHandler: @escaping (Result<Data, OpenMarketError>) -> Void)

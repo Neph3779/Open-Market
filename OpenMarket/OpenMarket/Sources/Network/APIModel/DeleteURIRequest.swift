@@ -7,13 +7,6 @@
 
 import Foundation
 
-struct DeleteURIRequest: Encodable {
-    let productId: String
-    let identifier: String
+struct DeleteURIRequest: Encodable, RequestData {
     let secret: String
-
-    private enum Codingkeys: String, CodingKey {
-        case productId = "product_id"
-        case identifier, secret
-    }
 }

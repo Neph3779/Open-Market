@@ -74,11 +74,17 @@ class SessionManager: SessionManagerProtocol {
     }
 
     func checkDeleteURI(productId: Int,
+                        secret: String,
                         completionHandler: @escaping (Result<Data, OpenMarketError>) -> Void) {
         do {
             let url = try RequestURLPath.checkDeleteURI(productId: productId)
-            let request = headerConfiguredRequest(method: .post, url: url)
-            /* http body 구성 작업*/
+            let deleteURIRequest = DeleteURIRequest(secret: secret)
+            var request = URLRequest(url: url)
+            request.httpMethod = HTTPMethod.post.rawValue
+            request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+            request.addValue(identifier, forHTTPHeaderField: "identifier")
+            request = try requestWithBody(request: request, method: .post, data: deleteURIRequest)
+
             dataTask(request: request, completionHandler: completionHandler).resume()
         } catch let error as OpenMarketError {
             completionHandler(.failure(error))
@@ -105,8 +111,9 @@ class SessionManager: SessionManagerProtocol {
                        completionHandler: @escaping (Result<Data, OpenMarketError>) -> Void) {
         do {
             let url = try RequestURLPath.deleteProduct(deleteURI: deleteURI)
-            let request = headerConfiguredRequest(method: .delete, url: url)
-            /* http body 구성 작업*/
+            var request = headerConfiguredRequest(method: .delete, url: url)
+            request.httpMethod = HTTPMethod.delete.rawValue
+            request.addValue(identifier, forHTTPHeaderField: "identifier")
             dataTask(request: request, completionHandler: completionHandler).resume()
         } catch let error as OpenMarketError {
             completionHandler(.failure(error))
@@ -128,6 +135,7 @@ class SessionManager: SessionManagerProtocol {
     private func requestWithBody<APIModel: RequestData>(request: URLRequest,
                                                         method: HTTPMethod,
                                                         data: APIModel) throws -> URLRequest {
+        // TODO: 이 부분 리팩토링 필요
         var request = request
         switch method {
         case .get:
@@ -135,12 +143,17 @@ class SessionManager: SessionManagerProtocol {
         case .post:
             if let postRequest = data as? PostRequest {
                 request.httpBody = try requestBodyEncoder.encodePostRequest(postRequest: postRequest)
-            } else { throw OpenMarketError.requestDataTypeNotMatch }
+                break
+            }
+            if let deleteURIRequest = data as? DeleteURIRequest {
+                request.httpBody = try requestBodyEncoder.encodeDeleteURIRequest(deleteURIRequest: deleteURIRequest)
+                break
+            }
+            throw OpenMarketError.requestDataTypeNotMatch
         case .patch:
             if data is PatchingItem { break }
             throw OpenMarketError.requestDataTypeNotMatch
         case .delete:
-            if data is DeletingItem { break }
             throw OpenMarketError.requestDataTypeNotMatch
         }
 

@@ -34,6 +34,14 @@ struct RequestBodyEncoder: RequestBodyEncoderProtocol {
         return requestData
     }
 
+    func encodeDeleteURIRequest(deleteURIRequest: DeleteURIRequest) throws -> Data {
+        guard let data = try? JSONEncoder().encode(deleteURIRequest) else {
+            throw OpenMarketError.bodyEncodingError
+        }
+
+        return data
+    }
+
     private func convertFileField(key: String, fileName: String, data: Data) -> Data {
         var dataField = Data()
         let divisionBoundary = "--\(Self.boundary)\(crlf)"
