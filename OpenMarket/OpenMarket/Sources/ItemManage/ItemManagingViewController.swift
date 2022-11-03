@@ -370,20 +370,3 @@ extension ItemManagingViewController: UITextFieldDelegate {
         }
     }
 }
-
-// MARK: TextViewDelegate
-extension ItemManagingViewController: UITextViewDelegate {
-    func textViewDidBeginEditing(_ textView: UITextView) {
-        if textView.textColor == UIColor.lightGray {
-            textView.text = nil
-            textView.textColor = nil
-        }
-    }
-
-    func textViewDidEndEditing(_ textView: UITextView) {
-        if textView.text.isEmpty {
-            textView.text = "상품의 상세한 내용을 작성해주세요."
-            textView.textColor = .lightGray
-        }
-    }
-}
