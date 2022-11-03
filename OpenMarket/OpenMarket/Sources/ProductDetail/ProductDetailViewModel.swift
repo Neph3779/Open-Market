@@ -73,7 +73,7 @@ final class ProductDetailViewModel {
             self.productImages = images
             DispatchQueue.main.async { [weak self] in
                 guard let self = self,
-                let reloadCollectionView = self.reloadCollectionView else { return }
+                      let reloadCollectionView = self.reloadCollectionView else { return }
                 reloadCollectionView()
             }
         }
