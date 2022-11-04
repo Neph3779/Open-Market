@@ -34,6 +34,10 @@ class MarketItemsViewController: UIViewController {
         return UICollectionView(frame: .zero, collectionViewLayout: flowLayout)
     }()
 
+    override func viewWillAppear(_ animated: Bool) {
+        viewModel.refreshPageData()
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
         bind()
@@ -41,7 +45,6 @@ class MarketItemsViewController: UIViewController {
         configureCollectionView()
         configureLoadingIndicator()
         configureNavigationItems()
-        fetchFirstPageData()
     }
 
     private func bind() {

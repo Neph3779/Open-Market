@@ -263,8 +263,8 @@ final class ItemManagingViewController: UIViewController {
         if viewModel.manageMode == .register {
             let postingItem = PostRequest(
                 parameter: PostRequest.Parameter(name: title, description: description, price: Double(price),
-                                                  currency: currency, stock: stock,
-                                                  discountedPrice: Double(discountedPrice), secret: password),
+                                                 currency: currency, stock: stock,
+                                                 discountedPrice: Double(discountedPrice), secret: password),
                 images: postImages())
             viewModel.postItem(postRequest: postingItem, completionHandler: requestCompletionHandler(result:))
         } else if viewModel.manageMode == .modify {
@@ -273,8 +273,6 @@ final class ItemManagingViewController: UIViewController {
                                             discountedPrice: discountedPrice, stock: stock, secret: password)
             viewModel.patchItem(patchingItem: patchingItem, completionHandler: requestCompletionHandler(result:))
         }
-
-        navigationController?.popViewController(animated: true)
     }
 
     private func postImages() -> [PostRequest.PostingImage] {
@@ -290,7 +288,9 @@ final class ItemManagingViewController: UIViewController {
     private func requestCompletionHandler(result: Result<Void, OpenMarketError>) {
         switch result {
         case .success:
-            break
+            DispatchQueue.main.async {
+                self.navigationController?.popToRootViewController(animated: true)
+            }
         case .failure(let error):
             showErrorAlert(error: error)
         }
