@@ -9,7 +9,7 @@ import Foundation
 
 struct PatchingItem: Encodable {
     let name: String?
-    let descriptions: String?
+    let description: String?
     let thumbnailId: Int?
     let price: Double?
     let currency: String?
@@ -19,7 +19,7 @@ struct PatchingItem: Encodable {
 
     private enum CodingKeys: String, CodingKey {
         case name
-        case descriptions
+        case description
         case thumbnailId = "thumbnail_id"
         case price
         case currency

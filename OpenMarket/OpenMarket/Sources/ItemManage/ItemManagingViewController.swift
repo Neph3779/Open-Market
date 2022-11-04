@@ -8,8 +8,7 @@
 import UIKit
 import PhotosUI
 
-// MARK: - View
-
+// TODO: ViewModel로 옮길 수 있는 로직들 옮기기
 final class ItemManagingViewController: UIViewController {
     private let viewModel = ItemManagingViewModel()
 
@@ -268,7 +267,7 @@ final class ItemManagingViewController: UIViewController {
                 images: postImages())
             viewModel.postItem(postRequest: postingItem, completionHandler: requestCompletionHandler(result:))
         } else if viewModel.manageMode == .modify {
-            let patchingItem = PatchingItem(name: title, descriptions: description,
+            let patchingItem = PatchingItem(name: title, description: description,
                                             thumbnailId: nil, price: price, currency: currency,
                                             discountedPrice: discountedPrice, stock: stock, secret: password)
             viewModel.patchItem(patchingItem: patchingItem, completionHandler: requestCompletionHandler(result:))
